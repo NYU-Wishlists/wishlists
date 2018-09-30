@@ -4,4 +4,4 @@ Wishlists RESTful service allows customers to create a collection of products th
 
 Team: Hu Jianyuan, Omer Katz, Sakada Lim, Minh Lai, Doyeon Kong
 
-# Setup
+## Setup
