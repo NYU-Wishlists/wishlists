@@ -5,7 +5,7 @@ Wishlists RESTful service allows customers to create a collection of products th
 Team: Hu Jianyuan, Omer Katz, Sakada Lim, Minh Lai, Doyeon Kong
 
 ## Setup
-For easy setup, you need to have Vagrant and VirtualBox installed.
+For easy setup, you need to have Vagrant and VirtualBox installed. \n
 Clone this repo and invoke vagrant:
 '''
 git clone 
