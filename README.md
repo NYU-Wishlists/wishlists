@@ -10,7 +10,7 @@ For easy setup, you need to have Vagrant and VirtualBox installed.
 Clone this repo and invoke vagrant:
 
 ```
-git clone 
+git clone https://github.com/wishlists/wishlists.git
 cd wishilists
 vagrant up && vagrant ssh
 cd /vagrant
