@@ -1,0 +1,18 @@
+# Dependencies
+Flask==1.0.2
+Flask-API==1.0
+Flask-SQLAlchemy==2.1
+SQLAlchemy==1.1.5
+# Runtime
+gunicorn==19.9.0
+honcho==1.0.1
+
+# Testing
+nose==1.3.7
+pinocchio==0.4.2
+pylint==1.9.3
+rednose==1.3.0
+
+# Code coverage
+coverage==4.5.1
+codecov==2.0.15
