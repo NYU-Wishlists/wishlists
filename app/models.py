@@ -1,7 +1,7 @@
 """
 Models for Wishlist Service
 
-All of the models are stored in this moduke
+All of the models are stored in this module
 
 Models
 ------
@@ -63,10 +63,13 @@ class Wishlist(object):
 	def add_entry(self, wishlist_entry):
 		wishlist_entry.id = len(self.entries)
 		self.entries.append(wishlist_entry)
+		
+	def delete_entry(self, ID):
+		del self.entries[ID]
 
 	@classmethod
 	def __next_index(cls):
-		""" Generate sthe next index in a continual sequence """
+		""" Generates the next index in a continual sequence """
 		with cls.lock:
 			cls.index += 1
 		return cls.index
