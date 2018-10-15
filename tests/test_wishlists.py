@@ -25,5 +25,22 @@ class TestWishlists(unittest.TestCase):
 		wishlist.add_entry(wishlist_entry)
 		self.assertEqual(wishlist.entries[0].name, "bike")
 
+	def test_deserialize_wishlist(self):
+		data = {"name": "mikes wishlist", "user": "mike", "entries": ["bike", "car", "bar"]}
+		wishlist = Wishlist()
+		wishlist.deserialize(data)
+		self.assertNotEqual(wishlist, None)
+		self.assertEqual(wishlist.id, 0)
+		self.assertEqual(wishlist.name, "mikes wishlist")
+		self.assertEqual(wishlist.user, "mike")
+		self.assertEqual(wishlist.entries, ["bike", "car", "bar"])
+		wishlist = Wishlist(1)
+		wishlist.deserialize(data)
+		self.assertNotEqual(wishlist, None)
+		self.assertEqual(wishlist.id, 1)
+		self.assertEqual(wishlist.name, "mikes wishlist")
+		self.assertEqual(wishlist.user, "mike")
+		self.assertEqual(wishlist.entries, ["bike", "car", "bar"])		
+
 if __name__ == '__main__':
 	unittest.main()

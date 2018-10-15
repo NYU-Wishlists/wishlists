@@ -39,7 +39,7 @@ class Wishlist(object):
 	data = []
 	index = 0
 
-	def __init__(self, wishlist_id=0, wishlist_name=0, wishlist_user='', wishlist_entries=[]):
+	def __init__(self, wishlist_id=0, wishlist_name='', wishlist_user='', wishlist_entries=[]):
 		""" Initialize a wishlist """
 		self.id = wishlist_id
 		self.name = wishlist_name
@@ -63,6 +63,32 @@ class Wishlist(object):
 	def add_entry(self, wishlist_entry):
 		wishlist_entry.id = len(self.entries)
 		self.entries.append(wishlist_entry)
+<<<<<<< Updated upstream
+=======
+
+	def delete_wishlist(self):
+		Wishlist.data.remove(self)
+		
+	# def delete_entry(self, ID):
+	# 	self.entries[ID] = 
+
+	def deserialize(self, data):
+		"""
+		Deserializes a Wishlist from a dictionary
+		Args:
+		data (dict): A dictionary containing the Wishlist data
+		"""
+		if not isinstance(data, dict):
+			raise DataValidationError('Invalid wishlist: body of request contained bad or no data')
+		try:
+			self.name = data['name']
+			self.user = data['user']
+			self.entries = data['entries']
+
+		except KeyError as err:
+			raise DataValidationError('Invalid wishlist: missing ' + err.args[0])
+		return
+>>>>>>> Stashed changes
 
 	@classmethod
 	def __next_index(cls):
