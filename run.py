@@ -4,7 +4,7 @@ Start the Wishlist Service and initializes logging
 """
 
 import os
-from app import app, # service
+from app import app, service
 
 # Pull options from environment
 HOST = os.getenv('HOST', '0.0.0.0')
