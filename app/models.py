@@ -10,7 +10,7 @@ Wishlist Entry - A product entry to a wishlist
 
 """
 
-import threading
+import threading, json
 
 class DataValidationError(Exception):
 	""" Used for an data validation errors when deserializing """
@@ -63,8 +63,7 @@ class Wishlist(object):
 	def add_entry(self, wishlist_entry):
 		wishlist_entry.id = len(self.entries)
 		self.entries.append(wishlist_entry)
-<<<<<<< Updated upstream
-=======
+
 
 	def delete_wishlist(self):
 		Wishlist.data.remove(self)
@@ -83,12 +82,17 @@ class Wishlist(object):
 		try:
 			self.name = data['name']
 			self.user = data['user']
-			self.entries = data['entries']
+			if not isinstance(data['entries'], list):
+				raise DataValidationError('Invalid wishlist: body of request contained bad or no data')
+			# entries = []
+			# for i in data['entries']:
+			# 	x = json.loads(i)
+			# 	entries.append(x)
+			self.entries = [Wishlist_entry(i['id'], i['name']) for i in data['entries']]
 
 		except KeyError as err:
 			raise DataValidationError('Invalid wishlist: missing ' + err.args[0])
 		return
->>>>>>> Stashed changes
 
 	@classmethod
 	def __next_index(cls):
