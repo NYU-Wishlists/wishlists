@@ -100,12 +100,6 @@ class Wishlist(object):
 		try:
 			self.name = data['name']
 			self.user = data['user']
-			if not isinstance(data['entries'], list):
-				raise DataValidationError('Invalid wishlist: body of request contained bad or no data')
-			# entries = []
-			# for i in data['entries']:
-			# 	x = json.loads(i)
-			# 	entries.append(x)
 			self.entries = [Wishlist_entry(i['id'], i['name']) for i in data['entries']]
 
 		except KeyError as err:
