@@ -4,11 +4,11 @@ Wishlist services
 
 Paths
 -----
-GET  /pets - Retrieves a list of pets from the database
-GET  /pets{id} - Retrirves a Pet with a specific id
-POST /pets - Creates a Pet in the datbase from the posted database
-PUT  /pets/{id} - Updates a Pet in the database fom the posted database
-DELETE /pets{id} - Removes a Pet from the database that matches the id
+GET  /wishlists - Retrieves a list of wishlists from the database
+GET  /wishlists{id} - Retrirves a wishlist with a specific id
+POST /wishlists - Creates a wishlist in the datbase from the posted database
+PUT  /wishlists/{id} - Updates a wishlist in the database fom the posted database
+DELETE /wishlists{id} - Removes a wishlist from the database that matches the id
 """
 
 import os
@@ -45,7 +45,7 @@ def bad_request(error):
 
 @app.errorhandler(404)
 def not_found(error):
-    """ Handles Pets that cannot be found """
+    """ Handles wishlists that cannot be found """
     return jsonify(status=404, error='Not Found', message=error.message), 404
 
 @app.errorhandler(405)
@@ -85,10 +85,27 @@ def list_all_wishlists():
 
 	
 ######################################################################
+# RETRIEVE A WISHLIST
+######################################################################
+@app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
+def get_wishlist(wishlist_id):
+	""" Retrieves a Wishlist with a specific id """
+	# app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
+	wishlist = Wishlist.find(wishlist_id)
+	if wishlist:
+		message = wishlist.serialize()
+		return_code = HTTP_200_OK
+	else:
+		message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
+		return_code = HTTP_404_NOT_FOUND
+	return jsonify(message), return_code
+
+
+######################################################################
 # UPDATE AN EXISTING WISHLIST
 ######################################################################
 
-@app.route('/wishlists/{int:wishlist_id}', methods=['PUT'])
+@app.route('/wishlists/<int:wishlist_id>', methods=['PUT'])
 def update_wishlist(wishlist_id):
 	""" Updates a Wishlist in the database from the posted database """
 	app.logger.info('Updating a Wishlist with id [{}]'.format(wishlist_id))
@@ -103,7 +120,6 @@ def update_wishlist(wishlist_id):
 	else:
 		message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
 		return_code = HTTP_404_NOT_FOUND
-
 	return jsonify(message), return_code
 
 
