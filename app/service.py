@@ -84,7 +84,7 @@ def update_wishlists(wishlist_id):
     wishlist.deserialize(request.get_json())
     wishlist.id = wishlist_id
     wishlist.save()
-    return make_response(jsonify(order.serialize()), status.HTTP_200_OK)
+    return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
