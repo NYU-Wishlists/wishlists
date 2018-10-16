@@ -69,21 +69,33 @@ def index():
     """ Return something useful by default """
     return jsonify(name='Wishlists REST API Service',
 					version='1.0',
-				   url=url_for('list_all_wishlists', _external=True)), HTTP_200_OK
+				   url=url_for('list_wishlists', _external=True)), HTTP_200_OK
 
 				   
 ######################################################################
 # LIST ALL WISHLISTS
 ######################################################################
+# @app.route('/wishlists', methods=['GET'])
+# def list_all_wishlists():
+# 	""" Retrieves a list of wishlists from the database """
+# 	app.logger.info('Listing wishlists')
+# 	results = []
+# 	results = Wishlist.all()
+# 	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
+
 @app.route('/wishlists', methods=['GET'])
-def list_all_wishlists():
+def list_wishlists():
 	""" Retrieves a list of wishlists from the database """
 	app.logger.info('Listing wishlists')
 	results = []
-	results = Wishlist.all()
+	wishlist_user = request.args.get('wishlist_user')
+	if wishlist_user:
+		results = Wishlist.find_by_user(wishlist_user)
+	else:
+		results = Wishlist.all()
 	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
 
-	
+
 ######################################################################
 # RETRIEVE A WISHLIST
 ######################################################################
