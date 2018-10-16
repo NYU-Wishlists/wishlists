@@ -44,7 +44,7 @@ def bad_request(error):
 
 @app.errorhandler(404)
 def not_found(error):
-    """ Handles Pets that cannot be found """
+    """ Handles wishlists that cannot be found """
     return jsonify(status=404, error='Not Found', message=error.message), 404
 
 @app.errorhandler(405)
@@ -87,6 +87,45 @@ def list_wishlists():
         wishlists = Wishlist.all()
 
     return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+
+	
+######################################################################
+# RETRIEVE A WISHLIST
+######################################################################
+@app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
+def get_wishlist(wishlist_id):
+	""" Retrieves a Wishlist with a specific id """
+	# app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
+	wishlist = Wishlist.find(wishlist_id)
+	if wishlist:
+		message = wishlist.serialize()
+		return_code = HTTP_200_OK
+	else:
+		message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
+		return_code = HTTP_404_NOT_FOUND
+	return jsonify(message), return_code
+
+
+######################################################################
+# UPDATE AN EXISTING WISHLIST
+######################################################################
+
+@app.route('/wishlists/<int:wishlist_id>', methods=['PUT'])
+def update_wishlist(wishlist_id):
+	""" Updates a Wishlist in the database from the posted database """
+	app.logger.info('Updating a Wishlist with id [{}]'.format(wishlist_id))
+	wishlist = Wishlist.find(wishlist_id)
+	if wishlist:
+		payload = request.get_json()
+		wishlist.deserialize(payload)
+		wishlist.id = wishlist_id
+		wishlist.save()
+		message = wishlist.serialize()
+		return_code = HTTP_200_OK
+	else:
+		message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
+		return_code = HTTP_404_NOT_FOUND
+	return jsonify(message), return_code
 
 
 ######################################################################
