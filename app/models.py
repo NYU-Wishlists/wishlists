@@ -28,6 +28,11 @@ class Wishlist_entry(object):
 		self.id = entry_id
 		self.name = item_name
 
+	def serialize(self):
+		""" Serializes a Wishlist_entry into a dictionary """
+		return {"id": self.id, "name": self.name}
+		
+		
 
 class Wishlist(object):
 	"""
@@ -66,7 +71,11 @@ class Wishlist(object):
 		
 	def delete_entry(self, ID):
 		del self.entries[ID]
-
+    
+	def serialize(self):
+		""" Serializes a wishlist into a dictionary """
+		return {"id": self.id, "wishlist_name": self.name, "user_name": self.user, "entries": [entry.serialize() for entry in self.entries]}
+	
 	@classmethod
 	def __next_index(cls):
 		""" Generates the next index in a continual sequence """
@@ -80,3 +89,8 @@ class Wishlist(object):
 		del cls.data[:]
 		cls.index = 0
 		return cls.data
+		
+	@classmethod
+	def all(cls):
+		""" Returns all of the Pets in the database """
+		return [wishlist for wishlist in cls.data]
