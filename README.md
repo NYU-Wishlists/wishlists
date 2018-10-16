@@ -35,8 +35,8 @@ service which looks something like this:
 
 ```
 {
-    name: "Pet Demo REST API Service",
-    url: "http://localhost:5000/pets",
+    name: "Wishlist Demo REST API Service",
+    url: "http://localhost:5000/wishlists",
     version: "1.0"
 }
 ```
