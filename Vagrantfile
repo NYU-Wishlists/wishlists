@@ -61,6 +61,7 @@ Vagrant.configure(2) do |config|
     apt-get -y autoremove
     # make sure that pip is up to date
     #pip install --upgrade pip
+	python -m pip install --upgrade pip #fix pip upgrade problem
     # Install app dependencies
     cd /vagrant
     pip install -r requirements.txt --ignore-installed

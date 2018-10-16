@@ -1,7 +1,7 @@
 """
 Models for Wishlist Service
 
-All of the models are stored in this moduke
+All of the models are stored in this module
 
 Models
 ------
@@ -28,13 +28,11 @@ class Wishlist_entry(object):
 		""" Initialize a wishlist entry """
 		self.id = entry_id
 		self.name = item_name
-
-	@classmethod
-	def __next_index(cls):
-		""" Generate sthe next index in a continual sequence """
-		with cls.lock:
-			cls.index += 1
-		return cls.index
+    
+	def serialize(self):
+		""" Serializes a Wishlist_entry into a dictionary """
+		return {"id": self.id, "name": self.name}
+  
 
 class Wishlist(object):
 	"""
@@ -70,7 +68,6 @@ class Wishlist(object):
 		wishlist_entry.id =  Wishlist_entry.__next_index() #len(self.entries)
 		self.entries.append(wishlist_entry)
 
-
 	def delete_wishlist(self):
 		Wishlist.data.remove(self)
 		
@@ -101,12 +98,14 @@ class Wishlist(object):
 		except KeyError as err:
 			raise DataValidationError('Invalid wishlist: missing ' + err.args[0])
 		return
-
-
+    
+	def serialize(self):
+		""" Serializes a wishlist into a dictionary """
+		return {"id": self.id, "wishlist_name": self.name, "user_name": self.user, "entries": [entry.serialize() for entry in self.entries]}
 
 	@classmethod
 	def __next_index(cls):
-		""" Generate sthe next index in a continual sequence """
+		""" Generates the next index in a continual sequence """
 		with cls.lock:
 			cls.index += 1
 		return cls.index
@@ -117,3 +116,8 @@ class Wishlist(object):
 		del cls.data[:]
 		cls.index = 0
 		return cls.data
+		
+	@classmethod
+	def all(cls):
+		""" Returns all of the Pets in the database """
+		return [wishlist for wishlist in cls.data]
