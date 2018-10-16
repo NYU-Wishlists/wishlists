@@ -1,14 +1,13 @@
-
 """
 Wishlist services
 
 Paths
 -----
-GET  /pets - Retrieves a list of pets from the database
-GET  /pets{id} - Retrirves a Pet with a specific id
-POST /pets - Creates a Pet in the datbase from the posted database
-PUT  /pets/{id} - Updates a Pet in the database fom the posted database
-DELETE /pets{id} - Removes a Pet from the database that matches the id
+GET  /wishlists - Retrieves a list of wishlists from the database
+GET  /wishlists{id} - Retrirves a Wishlist with a specific id
+POST /wishlists - Creates a Wishlist in the datbase from the posted database
+PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
+DELETE /wishlists{id} - Removes a Wishlist from the database that matches the id
 """
 
 import os
@@ -71,19 +70,24 @@ def index():
 					version='1.0',
 				   url=url_for('list_all_wishlists', _external=True)), HTTP_200_OK
 
-				   
+
 ######################################################################
 # LIST ALL WISHLISTS
 ######################################################################
 @app.route('/wishlists', methods=['GET'])
-def list_all_wishlists():
-	""" Retrieves a list of wishlists from the database """
-	app.logger.info('Listing wishlists')
-	results = []
-	results = Wishlist.all()
-	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
+def list_wishlists():
+    """ Retrieves all the wishlists from the database """
+    app.logger.info('Listing wishlists')
+    wishlists = []
+    wishlist_user = request.args.get('wishlist.user')
 
-	
+    if wishlist_user:
+        wishlists = Wishlist.find_by_wishlist_user(wishlist_user)
+    else:
+        wishlists = Wishlist.all()
+
+    return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+
 
 ######################################################################
 # Demo DATA
@@ -96,7 +100,7 @@ def create_demo_data():
 	Wishlist(0, "Wishlist demo 2", "demo user2", [Wishlist_entry(0, "test21"), Wishlist_entry(1, "test22")]).save()
 	return make_response(jsonify(message='Created demo wishlists'), HTTP_201_CREATED)
 
-	
+
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
 ######################################################################
