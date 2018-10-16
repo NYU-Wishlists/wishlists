@@ -84,6 +84,29 @@ def list_all_wishlists():
 	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
 
 	
+######################################################################
+# UPDATE AN EXISTING WISHLIST
+######################################################################
+
+@app.route('/wishlists/{int:wishlist_id}', methods=['PUT'])
+def update_wishlist(wishlist_id):
+	""" Updates a Wishlist in the database from the posted database """
+	app.logger.info('Updating a Wishlist with id [{}]'.format(wishlist_id))
+	wishlist = Wishlist.find(wishlist_id)
+	if wishlist:
+		payload = request.get_json()
+		wishlist.deserialize(payload)
+		wishlist.id = wishlist_id
+		wishlist.save()
+		message = wishlist.serialize()
+		return_code = HTTP_200_OK
+	else:
+		message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
+		return_code = HTTP_404_NOT_FOUND
+
+	return jsonify(message), return_code
+
+
 
 ######################################################################
 # Demo DATA

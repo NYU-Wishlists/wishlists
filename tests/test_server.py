@@ -50,6 +50,20 @@ class TestWishlistServer(unittest.TestCase):
 	    data = json.loads(resp.data)
 	    self.assertEqual(len(data), 2)	
 
+
+    def test_update_wishlist(self):
+        """ Update a Wishlist """
+        new_wishlist = {'name': 'Wishlist demo 3', 'user': 'demo user1', 'entries':[service.Wishlist_entry(0, "test31").serialize(), service.Wishlist_entry(1, "test32").serialize()]}
+        data = json.dumps(new_wishlist)
+        resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.get('/wishlists/2', content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_json = json.loads(resp.data)
+        self.assertEqual(new_json['name'],'Wishlist demo 3')
+        self.assertEqual(new_json['user'],'demo user1')
+        """self.assertEqual(new_json['entries'],'Wishlist demo 3')"""
+
 		
 
 ######################################################################
