@@ -79,10 +79,10 @@ def list_wishlists():
     """ Retrieves all the wishlists from the database """
     app.logger.info('Listing wishlists')
     wishlists = []
-    wishlist_user = request.args.get('wishlist.user')
+    wishlist_user = request.args.get('wishlist_user')
 
     if wishlist_user:
-        wishlists = Wishlist.find_by_wishlist_user(wishlist_user)
+        wishlists = Wishlist.find_by_user(wishlist_user)
     else:
         wishlists = Wishlist.all()
 
