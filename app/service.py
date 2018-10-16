@@ -68,7 +68,7 @@ def index():
     """ Return something useful by default """
     return jsonify(name='Wishlists REST API Service',
 					version='1.0',
-				   url=url_for('list_all_wishlists', _external=True)), HTTP_200_OK
+				   url=url_for('list_wishlists', _external=True)), HTTP_200_OK
 
 
 ######################################################################
