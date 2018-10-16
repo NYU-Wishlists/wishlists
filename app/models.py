@@ -54,7 +54,6 @@ class Wishlist(object):
 		"""
 		Saves a Wishlist to the data store
 		"""
-
 		if self.id == 0:
 			self.id = self.__next_index()
 			Wishlist.data.append(self)
@@ -64,17 +63,31 @@ class Wishlist(object):
 					Wishlist.data[i] = self
 					break
 
+	"""
+	It is not yet necessary to be able to add individual wishlist entries
+	as this is accomplished by updating the entire wishlist
+
+	# method to add a product entry to a wishlist's product list
 	def add_entry(self, wishlist_entry):
-		wishlist_entry.id =  Wishlist_entry.__next_index() #len(self.entries)
+		wishlist_entry.id =  len(self.entries)
 		self.entries.append(wishlist_entry)
 
+	"""
 	def delete_wishlist(self):
 		Wishlist.data.remove(self)
-		
+
+
+	"""
+	It is not yet necessary to be able to remove individual wishlist entries
+	as this is accomplished by updating the entire wishlist
+
+	# method to delete a product entry from a wishlist's product list		
 	def delete_entry(self, ID):
 		for i in self.entries:
 			if i.id == ID:
 				self.entries.remove(i) 
+
+	"""
 
 	def deserialize(self, data):
 		"""
@@ -87,12 +100,6 @@ class Wishlist(object):
 		try:
 			self.name = data['name']
 			self.user = data['user']
-			if not isinstance(data['entries'], list):
-				raise DataValidationError('Invalid wishlist: body of request contained bad or no data')
-			# entries = []
-			# for i in data['entries']:
-			# 	x = json.loads(i)
-			# 	entries.append(x)
 			self.entries = [Wishlist_entry(i['id'], i['name']) for i in data['entries']]
 
 		except KeyError as err:
@@ -101,7 +108,7 @@ class Wishlist(object):
     
 	def serialize(self):
 		""" Serializes a wishlist into a dictionary """
-		return {"id": self.id, "wishlist_name": self.name, "user_name": self.user, "entries": [entry.serialize() for entry in self.entries]}
+		return {"id": self.id, "name": self.name, "user": self.user, "entries": [entry.serialize() for entry in self.entries]}
 
 	@classmethod
 	def __next_index(cls):
@@ -121,3 +128,31 @@ class Wishlist(object):
 	def all(cls):
 		""" Returns all of the Pets in the database """
 		return [wishlist for wishlist in cls.data]
+
+	@classmethod
+	def find(cls, wishlist_id):
+		""" Finds a wishlist by its ID """
+		if not cls.data:
+			return None
+		wishlists = [wishlist for wishlist in cls.data if wishlist.id == wishlist_id]
+		if wishlists:
+			return wishlists[0]
+		return None
+
+	@classmethod
+	def find_by_user(cls, wishlist_user):
+		""" Returns all a user's wishlists
+
+		Args:
+			User (string): the owner of the wishlists you want to match
+		"""
+		return [wishlist for wishlist in cls.data if wishlist.user == wishlist_user]
+
+	@classmethod
+	def find_by_name(cls, wishlist_name):
+		""" Returns all wishlists with the given name
+
+		Args:
+			Name (string): the name of the wishlist you want to match
+		"""
+		return [wishlist for wishlist in cls.data if wishlist.name == wishlist_name]
