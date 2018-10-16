@@ -22,7 +22,7 @@ class Wishlist_entry(object):
 
 	"""
 	lock = threading.Lock()
-	
+
 	def __init__(self, entry_id=0, item_name=''):
 		""" Initialize a wishlist entry """
 		self.id = entry_id
@@ -63,7 +63,7 @@ class Wishlist(object):
 	def add_entry(self, wishlist_entry):
 		wishlist_entry.id = len(self.entries)
 		self.entries.append(wishlist_entry)
-		
+
 	def delete_entry(self, ID):
 		del self.entries[ID]
 
