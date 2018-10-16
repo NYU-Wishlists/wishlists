@@ -51,6 +51,18 @@ class TestWishlistServer(unittest.TestCase):
 		data = json.loads(resp.data)
 		self.assertEqual(len(data), 2)	
 
+	def test_query_wishlist_by_user(self):
+		""" Get a list of Wishlists for a User"""
+		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2')
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		self.assertTrue(len(resp.data) > 0)
+		print(resp.data)
+		self.assertTrue('Wishlist demo 2' in resp.data)
+		self.assertFalse("Wishlist demo 1" in resp.data)
+		data = json.loads(resp.data)
+		query_item = data[0]
+		self.assertEqual(query_item['user'], 'demo user2')
+
 	def test_get_wishlist_by_id(self):
 		""" Get a wishlist by ID """
 		resp = self.app.get('/wishlists/2')

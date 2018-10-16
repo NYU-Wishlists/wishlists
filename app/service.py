@@ -95,7 +95,7 @@ def list_wishlists():
 @app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
 def get_wishlist(wishlist_id):
 	""" Retrieves a Wishlist with a specific id """
-	# app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
+	app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
 	wishlist = Wishlist.find(wishlist_id)
 	if wishlist:
 		message = wishlist.serialize()
