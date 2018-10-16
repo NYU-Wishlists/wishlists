@@ -1,14 +1,13 @@
-
 """
 Wishlist services
 
 Paths
 -----
 GET  /wishlists - Retrieves a list of wishlists from the database
-GET  /wishlists{id} - Retrirves a wishlist with a specific id
-POST /wishlists - Creates a wishlist in the datbase from the posted database
-PUT  /wishlists/{id} - Updates a wishlist in the database fom the posted database
-DELETE /wishlists{id} - Removes a wishlist from the database that matches the id
+GET  /wishlists{id} - Retrirves a Wishlist with a specific id
+POST /wishlists - Creates a Wishlist in the datbase from the posted database
+PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
+DELETE /wishlists{id} - Removes a Wishlist from the database that matches the id
 """
 
 import os
@@ -71,38 +70,32 @@ def index():
 					version='1.0',
 				   url=url_for('list_wishlists', _external=True)), HTTP_200_OK
 
-				   
+
 ######################################################################
 # LIST ALL WISHLISTS
 ######################################################################
-# @app.route('/wishlists', methods=['GET'])
-# def list_all_wishlists():
-# 	""" Retrieves a list of wishlists from the database """
-# 	app.logger.info('Listing wishlists')
-# 	results = []
-# 	results = Wishlist.all()
-# 	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
-
 @app.route('/wishlists', methods=['GET'])
 def list_wishlists():
-	""" Retrieves a list of wishlists from the database """
-	app.logger.info('Listing wishlists')
-	results = []
-	wishlist_user = request.args.get('wishlist_user')
-	if wishlist_user:
-		results = Wishlist.find_by_user(wishlist_user)
-	else:
-		results = Wishlist.all()
-	return jsonify([wishlist.serialize() for wishlist in results]), HTTP_200_OK
+    """ Retrieves all the wishlists from the database """
+    app.logger.info('Listing wishlists')
+    wishlists = []
+    wishlist_user = request.args.get('wishlist_user')
 
+    if wishlist_user:
+        wishlists = Wishlist.find_by_user(wishlist_user)
+    else:
+        wishlists = Wishlist.all()
 
+    return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+
+	
 ######################################################################
 # RETRIEVE A WISHLIST
 ######################################################################
 @app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
 def get_wishlist(wishlist_id):
 	""" Retrieves a Wishlist with a specific id """
-	# app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
+	app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))
 	wishlist = Wishlist.find(wishlist_id)
 	if wishlist:
 		message = wishlist.serialize()
@@ -135,7 +128,6 @@ def update_wishlist(wishlist_id):
 	return jsonify(message), return_code
 
 
-
 ######################################################################
 # Demo DATA
 ######################################################################
@@ -147,7 +139,7 @@ def create_demo_data():
 	Wishlist(0, "Wishlist demo 2", "demo user2", [Wishlist_entry(0, "test21"), Wishlist_entry(1, "test22")]).save()
 	return make_response(jsonify(message='Created demo wishlists'), HTTP_201_CREATED)
 
-	
+
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
 ######################################################################
