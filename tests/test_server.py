@@ -50,7 +50,17 @@ class TestWishlistServer(unittest.TestCase):
 	    data = json.loads(resp.data)
 	    self.assertEqual(len(data), 2)	
 
-		
+    def test_get_wishlist(self):
+        """ Get one Wishlist"""
+        resp = self.app.get('/wishlists/2')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = json.loads(resp.data)
+        self.assertEqual(data['name'], 'Wishlist demo 2')
+        self.assertEqual(data['user'], 'demo user2')
+        """content"""
+        
+
+
 
 ######################################################################
 #   M A I N

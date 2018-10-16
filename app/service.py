@@ -68,7 +68,7 @@ def index():
     """ Return something useful by default """
     return jsonify(name='Wishlists REST API Service',
 					version='1.0',
-				   url=url_for('list_all_wishlists', _external=True)), HTTP_200_OK
+				   url=url_for('list_wishlists', _external=True)), HTTP_200_OK
 
 
 ######################################################################
@@ -87,6 +87,43 @@ def list_wishlists():
         wishlists = Wishlist.all()
 
     return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+
+
+
+######################################################################
+# ADD A NEW WISHLIST
+######################################################################
+@app.route('/wishlists',methods=['POST'])
+def create_wishlist():
+    """ Creates a Wishlist in the database from the posted database"""
+    app.logger.info('Creating a new wishlist')
+    payload = request.get_json()
+    wishlist = Wishlist()
+    wishlist.deserialize(payload)
+    wishlist.save()
+    message = wishlist.serialize()
+    response = make_response(jsonify(message), HTTP_201_CREATED)
+    response.headers['Location'] = url_for('get_wishlists', wishlist_id=wishlist.id, _external=true)
+    return response
+
+
+
+######################################################################
+# RETRIEVE A WISHLIST
+######################################################################
+@app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
+def get_wishlist(wishlist_id):
+    """ Retrieves a Wishlist with a specific id """
+    app.logger.info('Finding a wishlist with id [{}]'.format(wishlist_id))
+    wishlist = Wishlist.find(wishlist_id)
+    if wishlist:
+        message = wishlist.serialize()
+        return_code = HTTP_200_OK
+    else:
+        message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
+        return_code = HTTP_404_NOT_FOUND
+
+    return jsonify(message), return_code
 
 
 ######################################################################
