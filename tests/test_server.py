@@ -60,7 +60,46 @@ class TestWishlistServer(unittest.TestCase):
         """content"""
         
 
+    def test_create_wishlist(self):
+        """ Create a Wishlist """
+        # save the current number of wishlists for later comparrison
+        wishlist_count = self.get_wishlist_count()
+        # add a new pet
+        new_wishlist = {'name': 'Wishlist demo 3', 'user':'demo user2', 'entries':[{'id':0,'name':'test31'}]}
+        data = json.dumps(new_wishlist)
+        resp = self.app.post('/wishlists', data=data, content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertIsNotNone(location)
+        # Check the data is correct
+        new_json = json.loads(resp.data)
+        self.assertEqual(new_json['name'], 'Wishlist demo 3')
+        self.assertEqual(new_json['user'], 'demo user2')
+        self.assertEqual(new_json['entries'][0]['name'], 'test31')
+        # check that count has gone up and includes Wishlist demo 3
+        user = {'user': 'demo user2'}
+        data = json.dumps(user)
+        resp = self.app.get('/wishlists', data=data, content_type='application/json')
+        data = json.loads(resp.data)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(data), wishlist_count + 1)
+        self.assertIn(new_json, data)
 
+
+
+######################################################################
+# Utility functions
+######################################################################
+
+    def get_wishlist_count(self):
+        """ save the current number of wishlists for a user """
+        user = {'user': 'demo user2'}
+        userdata = json.dumps(user)
+        resp = self.app.get('/wishlists', data=userdata, content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = json.loads(resp.data)
+        return len(data)
 
 ######################################################################
 #   M A I N

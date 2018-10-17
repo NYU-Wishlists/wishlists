@@ -103,7 +103,7 @@ def create_wishlist():
     wishlist.save()
     message = wishlist.serialize()
     response = make_response(jsonify(message), HTTP_201_CREATED)
-    response.headers['Location'] = url_for('get_wishlists', wishlist_id=wishlist.id, _external=true)
+    response.headers['Location'] = url_for('get_wishlist', wishlist_id=wishlist.id, _external=True)
     return response
 
 
