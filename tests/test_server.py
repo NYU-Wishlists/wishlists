@@ -70,6 +70,27 @@ class TestWishlistServer(unittest.TestCase):
 		data = json.loads(resp.data)
 		self.assertEqual(data['name'], "Wishlist demo 2")
 
+	def test_get_wishlist_not_found(self):
+		""" Get a wishlist thats not found """
+		resp = self.app.get('/wishlists/0')
+		self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+
+	""" DEPENDS ON CREATE CALL """
+	# def test_spoof_wishlist_id(self):
+	# 	""" Create a wishlist passing in an id """
+	# 	# add a new wishlist
+	# 	new_wishlist = {'id': 999, 'name': 'Wishlist demo 3', 'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
+	# 	data = json.dumps(new_wishlist)
+	# 	resp = self.app.post('/wishlists', data=data, content_type='application/json')
+	# 	self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+	# 	# Make sure location header is set
+	# 	location = resp.headers.get('Location', None)
+	# 	self.assertIsNotNone(location)
+	# 	# Check the data is correct
+	# 	new_json = json.loads(resp.data)
+	# 	self.assertEqual(new_json['name'], 'Wishlist demo 3')
+	# 	self.assertNotEqual(new_json['id'], 999)
 
 	def test_update_wishlist(self):
 		""" Update a Wishlist """
@@ -84,7 +105,55 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(new_json['user'],'demo user1')
 		self.assertEqual(new_json['entries'][0]['name'],'test31')
 
-		
+	def test_update_wishlist_with_no_name(self):
+		""" Update a wishlist with no name """
+		new_wishlist = {'user': 'patty'}
+		data = json.dumps(new_wishlist)
+		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+	def test_update_wishlist_not_found(self):
+		""" Update a wishlist that can't be found """
+		new_wish = {"name": "timothy's list", "user": "timothy"}
+		data = json.dumps(new_wish)
+		resp = self.app.put('/wishlists/0', data=data, content_type='application/json')
+		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+	""" DEPENDS ON DELETE CALL """
+	# def test_delete_wishlist(self):
+	# 	""" Delete a Wishlist that exists """
+	# 	# delete a wishlist
+	# 	resp = self.app.delete('/wishlists/2', content_type='application/json')
+	# 	self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+	# 	self.assertEqual(len(resp.data), 0)
+	# 	resp = self.app.get('/wishlists/2')
+	# 	self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+	""" DEPENDS ON CREATE CALL """
+	# def test_create_wishlist_with_no_name(self):
+	# 	""" Create a Wishlist with the name missing """
+	# 	new_wishlist = {'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
+	# 	data = json.dumps(new_wishlist)
+	# 	resp = self.app.post('/wishlists', data=data, content_type='application/json')
+	# 	self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+	""" DEPENDS ON CREATE CALL """
+	# def test_create_wishlist_with_no_user(self):
+	# 	""" Create a Wishlist with the user missing """
+	# 	new_wishlist = {'name': 'Wishlist demo 3', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
+	# 	data = json.dumps(new_wishlist)
+	# 	resp = self.app.post('/wishlists', data=data, content_type='application/json')
+	# 	self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+	def test_get_nonexisting_wishlist(self):
+		""" Get a Wishlist that doesn't exist """
+		resp = self.app.get('/wishlists/5')
+		self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+	def test_method_not_allowed(self):
+		""" Call a Method thats not Allowed """
+		resp = self.app.post('/wishlists/0')
+		self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)		
 
 ######################################################################
 #   M A I N
