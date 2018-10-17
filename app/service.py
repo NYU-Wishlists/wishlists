@@ -146,25 +146,6 @@ def create_wishlist():
     return response
 
 
-
-######################################################################
-# RETRIEVE A WISHLIST
-######################################################################
-@app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
-def get_wishlist(wishlist_id):
-    """ Retrieves a Wishlist with a specific id """
-    app.logger.info('Finding a wishlist with id [{}]'.format(wishlist_id))
-    wishlist = Wishlist.find(wishlist_id)
-    if wishlist:
-        message = wishlist.serialize()
-        return_code = HTTP_200_OK
-    else:
-        message = {'error' : 'Wishlist with id: %s was not found' % str(wishlist_id)}
-        return_code = HTTP_404_NOT_FOUND
-
-    return jsonify(message), return_code
-
-
 ######################################################################
 # Demo DATA
 ######################################################################
