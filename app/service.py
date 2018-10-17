@@ -178,7 +178,16 @@ def delete_user_wishlists(user_name):
         wishlist.delete_wishlist()
     return make_response('', HTTP_204_NO_CONTENT)
 
-
+######################################################################
+# Demo DATA
+######################################################################
+@app.route('/wishlists/demo', methods=['POST'])
+def create_demo_data():
+	""" Loads a few wishlists into the database for demos """
+	app.logger.info('Loading demo wishlists')
+	Wishlist(0, "Wishlist demo 1", "demo user1", [Wishlist_entry(0, "test11"), Wishlist_entry(1, "test12")]).save()
+	Wishlist(0, "Wishlist demo 2", "demo user2", [Wishlist_entry(0, "test21"), Wishlist_entry(1, "test22")]).save()
+	return make_response(jsonify(message='Created demo wishlists'), HTTP_201_CREATED)
 
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
