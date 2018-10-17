@@ -8,7 +8,6 @@ GET  /wishlists{id} - Retrirves a Wishlist with a specific id
 POST /wishlists - Creates a Wishlist in the datbase from the posted database
 PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
 DELETE /wishlists{id} - Removes a Wishlist from the database that matches the id
-DELETE /wishlists/{user_name}/delete_all - Removes all User's Wishlists from the database that matches the user_name
 """
 
 import os
@@ -164,6 +163,7 @@ def create_wishlist():
     response = make_response(jsonify(message), HTTP_201_CREATED)
     response.headers['Location'] = url_for('get_wishlist', wishlist_id=wishlist.id, _external=True)
     return response
+
 
 
 ######################################################################

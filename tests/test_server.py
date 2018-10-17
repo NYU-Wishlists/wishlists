@@ -178,14 +178,12 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(new_json['name'],'Wishlist demo 3')
 		self.assertEqual(new_json['user'],'demo user1')
 		self.assertEqual(new_json['entries'][0]['name'],'test31')
-	
 	def test_update_wishlist_with_no_name(self):
 		""" Update a wishlist with no name """
 		new_wishlist = {'user': 'patty'}
 		data = json.dumps(new_wishlist)
 		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-	
 	def test_update_wishlist_not_found(self):
 		""" Update a wishlist that can't be found """
 		new_wish = {"name": "timothy's list", "user": "timothy"}
