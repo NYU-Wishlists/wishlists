@@ -178,31 +178,18 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(new_json['name'],'Wishlist demo 3')
 		self.assertEqual(new_json['user'],'demo user1')
 		self.assertEqual(new_json['entries'][0]['name'],'test31')
-	
 	def test_update_wishlist_with_no_name(self):
 		""" Update a wishlist with no name """
 		new_wishlist = {'user': 'patty'}
 		data = json.dumps(new_wishlist)
 		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-	
 	def test_update_wishlist_not_found(self):
 		""" Update a wishlist that can't be found """
 		new_wish = {"name": "timothy's list", "user": "timothy"}
 		data = json.dumps(new_wish)
 		resp = self.app.put('/wishlists/0', data=data, content_type='application/json')
 		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-	def test_delete_wishlist_by_user(self):
-	    """ Delete a wishlist by user name  """
-	    user_wishlists = self.get_wishlist_count_by_user('demo user1')
-	    wishlist_count = self.get_wishlist_count()
-	    resp = self.app.delete('/wishlists/demo user1/delete_all', content_type='application/json')
-	    self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-	    self.assertEqual(len(resp.data),0)
-	    new_count = self.get_wishlist_count()
-	    self.assertEqual(new_count, wishlist_count - user_wishlists)
-
 
 	""" DEPENDS ON DELETE CALL """
 	# def test_delete_wishlist(self):
@@ -220,18 +207,7 @@ class TestWishlistServer(unittest.TestCase):
 
 	def get_wishlist_count(self):
 		""" save the current number of wishlists for a user """
-		user = {'user': 'demo user2'}
-		userdata = json.dumps(user)
-		resp = self.app.get('/wishlists', content_type='application/json')
-		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		data = json.loads(resp.data)
-		return len(data)
-
-	def get_wishlist_count_by_user(self, user_name):
-		""" save the current number of wishlists for a user """
-		user = {'user': user_name}
-		userdata = json.dumps(user)
-		resp = self.app.get('/wishlists', query_string='wishlist_user={}'.format(user_name))
+		resp = self.app.get('/wishlists')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
 		return len(data)
