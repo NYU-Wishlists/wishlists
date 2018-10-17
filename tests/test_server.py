@@ -207,9 +207,7 @@ class TestWishlistServer(unittest.TestCase):
 
 	def get_wishlist_count(self):
 		""" save the current number of wishlists for a user """
-		user = {'user': 'demo user2'}
-		userdata = json.dumps(user)
-		resp = self.app.get('/wishlists', data=userdata, content_type='application/json')
+		resp = self.app.get('/wishlists')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
 		return len(data)
