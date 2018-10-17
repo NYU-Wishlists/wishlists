@@ -204,7 +204,6 @@ class TestWishlistServer(unittest.TestCase):
 	    self.assertEqual(new_count, wishlist_count - user_wishlists)
 
 
-
 ######################################################################
 # Utility functions
 ######################################################################
