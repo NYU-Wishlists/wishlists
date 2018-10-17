@@ -8,6 +8,7 @@ GET  /wishlists{id} - Retrirves a Wishlist with a specific id
 POST /wishlists - Creates a Wishlist in the datbase from the posted database
 PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
 DELETE /wishlists{id} - Removes a Wishlist from the database that matches the id
+DELETE /wishlists/{user_name}/delete_all - Removes all User's Wishlists from the database that matches the user_name
 """
 
 import os
@@ -163,6 +164,33 @@ def create_wishlist():
     response = make_response(jsonify(message), HTTP_201_CREATED)
     response.headers['Location'] = url_for('get_wishlist', wishlist_id=wishlist.id, _external=True)
     return response
+
+
+######################################################################
+# DELETE ALL WISHLISTS OF USER
+######################################################################
+@app.route('/wishlists/<string:user_name>/delete_all', methods=['DELETE'])
+def delete_user_wishlists(user_name):
+    """ Removes all wishlists from the database that matches the user name"""
+    app.logger.info('Deleting all user id [{}] wishlists'.format(user_name))
+    wishlists = Wishlist.find_by_user(user_name)
+    for wishlist in wishlists:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
+
+
+######################################################################
+# Demo DATA
+######################################################################
+@app.route('/wishlists/demo', methods=['POST'])
+def create_demo_data():
+	""" Loads a few wishlists into the database for demos """
+	app.logger.info('Loading demo wishlists')
+	Wishlist(0, "Wishlist demo 1", "demo user1", [Wishlist_entry(0, "test11"), Wishlist_entry(1, "test12")]).save()
+	Wishlist(0, "Wishlist demo 2", "demo user2", [Wishlist_entry(0, "test21"), Wishlist_entry(1, "test22")]).save()
+	return make_response(jsonify(message='Created demo wishlists'), HTTP_201_CREATED)
+
+
 
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
