@@ -107,7 +107,6 @@ def delete_wishlist_by_name(wishlist_name):
     for wishlist in wishlist_list:
         wishlist.delete_wishlist()
     return make_response('', HTTP_204_NO_CONTENT)
-=======
 	
 ######################################################################
 # RETRIEVE A WISHLIST
