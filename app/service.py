@@ -8,6 +8,7 @@ GET  /wishlists{id} - Retrirves a Wishlist with a specific id
 POST /wishlists - Creates a Wishlist in the datbase from the posted database
 PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
 DELETE /wishlists{id} - Removes a Wishlist from the database that matches the id
+DELETE /wishlists/{user_name}/delete_all - Removes all User's Wishlists from the database that matches the user_name
 """
 
 import os
@@ -88,7 +89,26 @@ def list_wishlists():
 
     return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
 
-	
+######################################################################
+# Delete a wishlist
+######################################################################
+@app.route('/wishlists/<int:id>', methods=['DELETE'])
+def delete_wishlist(id):
+    """Removes a wishlist from the database that matches the id """
+    wishlist = Wishlist.find(id)
+    if wishlist:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
+
+
+@app.route('/wishlists/<wishlist_name>', methods=['DELETE'])
+def delete_wishlist_by_name(wishlist_name):
+    """Remove wishlists from the database that matches the name"""
+    wishlist_list = Wishlist.find_by_name(wishlist_name)
+    for wishlist in wishlist_list:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
+
 ######################################################################
 # RETRIEVE A WISHLIST
 ######################################################################
@@ -169,6 +189,7 @@ def create_demo_data():
 	Wishlist(0, "Wishlist demo 1", "demo user1", [Wishlist_entry(0, "test11"), Wishlist_entry(1, "test12")]).save()
 	Wishlist(0, "Wishlist demo 2", "demo user2", [Wishlist_entry(0, "test21"), Wishlist_entry(1, "test22")]).save()
 	return make_response(jsonify(message='Created demo wishlists'), HTTP_201_CREATED)
+
 
 
 ######################################################################
