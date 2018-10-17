@@ -191,15 +191,16 @@ class TestWishlistServer(unittest.TestCase):
 		resp = self.app.put('/wishlists/0', data=data, content_type='application/json')
 		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-	""" DEPENDS ON DELETE CALL """
-	# def test_delete_wishlist(self):
-	# 	""" Delete a Wishlist that exists """
-	# 	# delete a wishlist
-	# 	resp = self.app.delete('/wishlists/2', content_type='application/json')
-	# 	self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-	# 	self.assertEqual(len(resp.data), 0)
-	# 	resp = self.app.get('/wishlists/2')
-	# 	self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
+	def test_delete_wishlist_by_user(self):
+	    """ Delete a wishlist by user name  """
+	    user_wishlists = self.get_wishlist_count_by_user('demo user1')
+	    wishlist_count = self.get_wishlist_count()
+	    resp = self.app.delete('/wishlists/demo user1/delete_all', content_type='application/json')
+	    self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+	    self.assertEqual(len(resp.data),0)
+	    new_count = self.get_wishlist_count()
+	    self.assertEqual(new_count, wishlist_count - user_wishlists)
+
 
 ######################################################################
 # Utility functions
@@ -207,7 +208,16 @@ class TestWishlistServer(unittest.TestCase):
 
 	def get_wishlist_count(self):
 		""" save the current number of wishlists for a user """
-		resp = self.app.get('/wishlists')
+		resp = self.app.get('/wishlists', content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		data = json.loads(resp.data)
+		return len(data)
+
+	def get_wishlist_count_by_user(self, user_name):
+		""" save the current number of wishlists for a user """
+		user = {'user': user_name}
+		userdata = json.dumps(user)
+		resp = self.app.get('/wishlists', query_string='wishlist_user={}'.format(user_name))
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
 		return len(data)

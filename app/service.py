@@ -164,6 +164,22 @@ def create_wishlist():
     response.headers['Location'] = url_for('get_wishlist', wishlist_id=wishlist.id, _external=True)
     return response
 
+
+
+######################################################################
+# DELETE ALL WISHLISTS OF USER
+######################################################################
+@app.route('/wishlists/<string:user_name>/delete_all', methods=['DELETE'])
+def delete_user_wishlists(user_name):
+    """ Removes all wishlists from the database that matches the user name"""
+    app.logger.info('Deleting all user id [{}] wishlists'.format(user_name))
+    wishlists = Wishlist.find_by_user(user_name)
+    for wishlist in wishlists:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
+
+
+
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
 ######################################################################
