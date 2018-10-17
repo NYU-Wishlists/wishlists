@@ -68,7 +68,7 @@ def index():
     """ Return something useful by default """
     return jsonify(name='Wishlists REST API Service',
 					version='1.0',
-				   url=url_for('list_all_wishlists', _external=True)), HTTP_200_OK
+				   url=url_for('list_wishlists', _external=True)), HTTP_200_OK
 
 
 ######################################################################
@@ -87,6 +87,26 @@ def list_wishlists():
         wishlists = Wishlist.all()
 
     return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+
+######################################################################
+# Delete a wishlist
+######################################################################
+@app.route('/wishlists/<int:id>', methods=['DELETE'])
+def delete_wishlist(id):
+    """Removes a wishlist from the database that matches the id """
+    wishlist = Wishlist.find(id)
+    if wishlist:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
+
+
+@app.route('/wishlists/<wishlist_name>', methods=['DELETE'])
+def delete_wishlist_by_name(wishlist_name):
+    """Remove wishlists from the database that matches the name"""
+    wishlist_list = Wishlist.find_by_name(wishlist_name)
+    for wishlist in wishlist_list:
+        wishlist.delete_wishlist()
+    return make_response('', HTTP_204_NO_CONTENT)
 
 
 ######################################################################
