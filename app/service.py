@@ -91,7 +91,7 @@ def list_wishlists():
 ######################################################################
 # Delete a wishlist
 ######################################################################
-@app.route('/wishlists/<int:id>', methods=['DELETE'])
+@app.route('/wishlists/<int:id>', methods =['DELETE'])
 def delete_wishlist(id):
     """Removes a wishlist from the database that matches the id """
     wishlist = Wishlist.find(id)
@@ -111,7 +111,7 @@ def delete_wishlist_by_name(wishlist_name):
 ######################################################################
 # RETRIEVE A WISHLIST
 ######################################################################
-@app.route('/wishlists/<int:wishlist_id>', methods=['GET'])
+@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
 def get_wishlist(wishlist_id):
 	""" Retrieves a Wishlist with a specific id """
 	app.logger.info('Finding a Wishlist with id [{}]'.format(wishlist_id))

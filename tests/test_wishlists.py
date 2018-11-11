@@ -22,7 +22,7 @@ class TestWishlists(unittest.TestCase):
 		self.assertEqual(wishlist.user, "mike")
 
 	def test_add_a_wishlist(self):
-		""" Create a pet and add it to the database """
+		""" Create a wishlist and add it to the database """
 		wishlists = Wishlist.all()
 
 		self.assertEqual(wishlists, [])
@@ -55,7 +55,7 @@ class TestWishlists(unittest.TestCase):
 		wishlist = Wishlist(0, "mike's wishlist", "mike")
 		wishlist.save()
 		self.assertEqual(len(Wishlist.all()), 1)
-		# delete the pet and make sure it isn't in the database
+		# delete the wishlist and make sure it isn't in the database
 		wishlist.delete_wishlist()
 		self.assertEqual(len(Wishlist.all()), 0)
 
@@ -112,23 +112,23 @@ class TestWishlists(unittest.TestCase):
 		self.assertEqual(data['user'], "mike")
 
 	def test_deserialize_with_no_name(self):
-		""" Deserialize a Pet without a name """
+		""" Deserialize a wishlist without a name """
 		wishlist = Wishlist()
 		data = {"id":0, "user": "Katy"}
 		self.assertRaises(DataValidationError, wishlist.deserialize, data)
 
 	def test_deserialize_with_no_data(self):
-		""" Deserialize a Pet with no data """
+		""" Deserialize a wishlist with no data """
 		wishlist = Wishlist()
 		self.assertRaises(DataValidationError, wishlist.deserialize, None)
 
 	def test_deserialize_with_bad_data(self):
-		""" Deserailize a Pet with bad data """
+		""" Deserailize a wishlist with bad data """
 		wishlist = Wishlist()
 		self.assertRaises(DataValidationError, wishlist.deserialize, "data")
 
 	def test_find_wishlist(self):
-		""" Find a Pet by ID """
+		""" Find a wishlist by ID """
 		Wishlist(0, "mike's wishlist", "mike").save()
 		Wishlist(0, "joan's wishlist", "joan").save()
 		wishlist = Wishlist.find(2)
