@@ -1,11 +1,10 @@
 # wishlists
 
+[![Build Status](https://travis-ci.org/NYU-Wishlists/wishlists.svg?branch=master)](https://travis-ci.org/NYU-Wishlists/wishlists)
+
 Wishlists RESTful service allows customers to create a collection of products that they wish they had the money to purchase.
 
 Team: Hu Jianyuan, Omer Katz, Sakada Lim, Minh Lai, Doyeon Kong
-
-# Adding Travis CI Badge
-[![Build Status](https://travis-ci.org/NYU-Wishlists/wishlists.svg?branch=master)](https://travis-ci.org/NYU-Wishlists/wishlists)
 
 ## Prerequisite Installation using Vagrant
 
@@ -54,6 +53,59 @@ Run the tests suite with:
 ```
 
 You should see all of the tests passing with a code coverage report at the end. this is controlled by the `setup.cfg` file in the repo.
+
+## Services
+
+- **Create** a wishlist 
+
+  ```
+  POST /wishlists
+  ```
+
+- **Read** a wishlist with id, list all items in it
+
+  ```
+  GET /wishlists/<int:wishtlist_id>/items
+  ```
+
+- **Update** a wishlist with id
+
+  ```
+  PUT /wishlists/<int:wishlist_id>
+  ```
+
+- **Delete** a wishlist with id
+
+  ```
+  DELETE /wishlists/<int:id>
+  ```
+
+- **Delete** all wishlists that match a name
+
+  ```
+  DELETE /wishlists/<wishlist_name>
+  ```
+
+- **List** all wishlists
+
+  ```
+  GET /wishlists
+  GET /
+  ```
+
+- **Query** with username, list all wishlists of a user
+
+  ```
+  GET /wishlists?wishlist_user="username"
+  ```
+
+- **Action** delete all wishlists of a user
+
+  ```
+  DELETE /wishlists/<string:user_name>/delete_all
+  ```
+
+
 
 ## Shutdown
 
