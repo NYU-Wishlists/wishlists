@@ -4,6 +4,8 @@ Wishlists RESTful service allows customers to create a collection of products th
 
 Team: Hu Jianyuan, Omer Katz, Sakada Lim, Minh Lai, Doyeon Kong
 
+# Adding Travis CI Badge
+[![Build Status](https://travis-ci.org/NYU-Wishlists/wishlists.svg?branch=master)](https://travis-ci.org/NYU-Wishlists/wishlists)
 
 ## Prerequisite Installation using Vagrant
 
