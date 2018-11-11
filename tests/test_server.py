@@ -69,14 +69,6 @@ class TestWishlistServer(unittest.TestCase):
 		data = json.loads(resp.data)
 		self.assertEqual(len(data), 2)	
 
-	def test_get_wishlist(self):
-		""" Get one Wishlist"""
-		resp = self.app.get('/wishlists/2')
-		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		data = json.loads(resp.data)
-		self.assertEqual(data['name'], 'Wishlist demo 2')
-		self.assertEqual(data['user'], 'demo user2')
-		"""content"""
 		
 	def test_query_wishlist_by_user(self):
 		""" Get a list of Wishlists for a User"""
@@ -92,14 +84,14 @@ class TestWishlistServer(unittest.TestCase):
 
 	def test_get_wishlist_by_id(self):
 		""" Get a wishlist by ID """
-		resp = self.app.get('/wishlists/2')
+		resp = self.app.get('/wishlists/2/items')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
 		self.assertEqual(data['name'], "Wishlist demo 2")
 
 	def test_get_wishlist_not_found(self):
 		""" Get a wishlist thats not found """
-		resp = self.app.get('/wishlists/0')
+		resp = self.app.get('/wishlists/0/items')
 		self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 	def test_create_wishlist(self):
@@ -172,7 +164,7 @@ class TestWishlistServer(unittest.TestCase):
 		data = json.dumps(new_wishlist)
 		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		resp = self.app.get('/wishlists/2')
+		resp = self.app.get('/wishlists/2/items')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		new_json = json.loads(resp.data)
 		self.assertEqual(new_json['name'],'Wishlist demo 3')
@@ -207,7 +199,7 @@ class TestWishlistServer(unittest.TestCase):
 ######################################################################
 
 	def get_wishlist_count(self):
-		""" save the current number of wishlists for a user """
+		""" save the current number of wishlists """
 		resp = self.app.get('/wishlists', content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
