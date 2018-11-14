@@ -105,7 +105,12 @@ You should see all of the tests passing with a code coverage report at the end. 
   DELETE /wishlists/<string:user_name>/delete_all
   ```
 
+- **Try out** the demo 
 
+  ```
+  POST /wishlists/demo
+  ... 
+  ```
 
 ## Shutdown
 
