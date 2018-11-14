@@ -1,19 +1,17 @@
----
-# This manifest deploys a Python Flask application with a Redis database
 applications:
-- name: nyu-wishlist-servicef18
+- name: nyu-wishlist-cf-test
   memory: 64M
   instances: 1
   timeout: 180
   #random-route: true
-  host: nyu-wishlist-servicef18
+  host: nyu-wishlist-cf-test
   domain: mybluemix.net
   path: .
   disk_quota: 1024M
   buildpack: python_buildpack
-  command: gunicorn --bind=0.0.0.0:$PORT service:app
-  services:
-  - Cloudant
+  command: python run.py
+#  services:
+#  - Cloudant
   env:
     FLASK_APP : server
     FLASK_DEBUG : false
