@@ -9,7 +9,7 @@ from flask import Flask
 # Create Flask application
 app = Flask(__name__)
 
-# import service
+import service
 
 # Set up logging for production
 print 'Setting up logging for {}...'.format(__name__)

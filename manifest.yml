@@ -1,15 +1,15 @@
 applications:
-- name: nyu-wishlist-cf-test
+- name: nyu-wishlist-service-f18
   memory: 64M
   instances: 1
   timeout: 180
   #random-route: true
-  host: nyu-wishlist-cf-test
+  host: nyu-wishlist-service-f18
   domain: mybluemix.net
   path: .
   disk_quota: 1024M
   buildpack: python_buildpack
-  command: python run.py
+#  command: python run.py
 #  services:
 #  - Cloudant
   env:
