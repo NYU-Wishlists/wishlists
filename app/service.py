@@ -152,18 +152,6 @@ def update_wishlist(wishlist_id):
 
 
 
-######################################################################
-# DELETE ALL WISHLISTS OF USER
-######################################################################
-@app.route('/wishlists/<string:user_name>/delete_all', methods=['DELETE'])
-def delete_user_wishlists(user_name):
-    """ Removes all wishlists from the database that matches the user name"""
-    app.logger.info('Deleting all user id [{}] wishlists'.format(user_name))
-    wishlists = Wishlist.find_by_user(user_name)
-    for wishlist in wishlists:
-        wishlist.delete_wishlist()
-    return make_response('', HTTP_204_NO_CONTENT)
-
 
 ######################################################################
 #  PATH: /wishlists
@@ -190,7 +178,7 @@ class WishlistCollection(Resource):
 
         app.logger.info('[%s] Wishlists returned', len(wishlists))
         results = [wishlist.serialize() for wishlist in wishlists]
-        return results, HTTP_200_OK
+        return results, status.HTTP_200_OK
 
     #------------------------------------------------------------------
     # ADD A NEW WISHLIST
@@ -215,6 +203,23 @@ class WishlistCollection(Resource):
         location_url = api.url_for(WishlistResource, wishlist_id=wishlist.id, _external=True)
         return wishlist.serialize(), status.HTTP_201_CREATED, {'Location':location_url}
 
+
+######################################################################
+#  PATH: /wishlists/{user_name}/delete_all
+######################################################################
+@ns.route('/<string:user_name>/delete_all')
+@ns.param('user_name','The Wishlist owner')
+class DeleteAllResource(Resource):
+    """ DeleteAll actions on Wishlists"""
+    @ns.doc('delete_all_wishlists_of_a_user')
+    @ns.response(204, 'All wishlists of the user deleted')
+    def delete(self,user_name):
+        """ Removes all wishlists of a user"""
+        app.logger.info('Request to delete all wishlists of a user')
+        wishlists = Wishlist.find_by_user(user_name)
+        for wishlist in wishlists:
+            wishlist.delete_wishlist()
+        return '', status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
