@@ -20,7 +20,7 @@ from flask import jsonify, request, json, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields
 from werkzeug.exceptions import NotFound
-from app.models import Pet, DataValidationError, DatabaseConnectionError
+from app.models import Wishlist, Wishlist_entry, DataValidationError # DatabaseConnectionError
 from . import app
 
 ######################################################################
@@ -61,13 +61,14 @@ def request_validation_error(error):
     app.logger.info(message)
     return {'status':400, 'error': 'Bad Request', 'message': message}, 400
 
+"""
 @api.errorhandler(DatabaseConnectionError)
 def database_connection_error(error):
-    """ Handles Database Errors from connection attempts """
+     ""Handles Database Errors from connection attempts"" 
     message = error.message or str(error)
     app.logger.critical(message)
     return {'status':500, 'error': 'Server Error', 'message': message}, 500
-
+"""
 
 ######################################################################
 # GET HEALTH CHECK
@@ -187,7 +188,7 @@ class WishlistCollection(Resource):
     @ns.expect(wishlist_model)
     @ns.response(400, 'The posted data was not valid')
     @ns.response(201, 'Wishlist created successfully')
-    @ns.marshal_with(pet_model, code = 201)
+    @ns.marshal_with(wishlist_model, code = 201)
     def post(self):
         """
         Creates a Wishlist
