@@ -73,13 +73,26 @@ class TestWishlistServer(unittest.TestCase):
 
 		
 	def test_query_wishlist_by_user(self):
-		""" Get a list of Wishlists for a User"""
+		""" Get a list of Wishlists for a User and Wishlist Name"""
 		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		self.assertTrue(len(resp.data) > 0)
 		print(resp.data)
 		self.assertTrue('Wishlist demo 2' in resp.data)
 		self.assertFalse("Wishlist demo 1" in resp.data)
+		data = json.loads(resp.data)
+		query_item = data[0]
+		self.assertEqual(query_item['user'], 'demo user2')
+
+	def test_query_wishlist_by_user_and_name(self):
+		""" Get a list of Wishlists for a User"""
+		Wishlist("Wishlist demo 3", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
+		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2&wishlist_name=Wishlist demo 3')
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		self.assertTrue(len(resp.data) > 0)
+		print(resp.data)
+		self.assertTrue('Wishlist demo 3' in resp.data)
+		self.assertFalse("Wishlist demo 2" in resp.data)
 		data = json.loads(resp.data)
 		query_item = data[0]
 		self.assertEqual(query_item['user'], 'demo user2')

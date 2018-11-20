@@ -66,6 +66,9 @@ class Wishlist(object):
 		self.user = wishlist_user
 		self.entries = wishlist_entries
 
+	def equals(self, other): 
+		return self.__dict__ == other.__dict__
+
 	def create(self):
 		"""
 		Creates a new Wishlist in the database

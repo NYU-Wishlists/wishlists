@@ -80,13 +80,22 @@ def list_wishlists():
 	app.logger.info('Listing wishlists')
 	wishlists = []
 	wishlist_user = request.args.get('wishlist_user')
+	wishlist_name = request.args.get('wishlist_name')
 
 	if wishlist_user:
-		wishlists = Wishlist.find_by_user(wishlist_user)
-	else:
-		wishlists = Wishlist.all()
+		a = Wishlist.find_by_user(wishlist_user)
+		ay = [w.serialize() for w in a]
 
-	return jsonify([wishlist.serialize() for wishlist in wishlists]), HTTP_200_OK
+		if wishlist_name:
+			b = Wishlist.find_by_name(wishlist_name)
+			bee = [w.serialize() for w in b]
+
+			wishlists = [x for x in ay if x in bee]
+		else:
+			wishlists = ay
+	else:
+		wishlists = [w.serialize() for w in Wishlist.all()]
+	return jsonify(wishlists), HTTP_200_OK
 
 ######################################################################
 # Delete a wishlist
