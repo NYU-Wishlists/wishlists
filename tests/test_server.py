@@ -27,9 +27,10 @@ class TestWishlistServer(unittest.TestCase):
 
 	def setUp(self):
 		""" Runs before each test """
+		Wishlist.init_db("tests")
 		service.Wishlist.remove_all()
-		service.Wishlist(0, "Wishlist demo 1", "demo user1", [service.Wishlist_entry(0, "test11"), service.Wishlist_entry(1, "test12")]).save()
-		service.Wishlist(0, "Wishlist demo 2", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
+		Wishlist("Wishlist demo 1", "demo user1", [service.Wishlist_entry(0, "test11"), service.Wishlist_entry(1, "test12")]).save()
+		Wishlist("Wishlist demo 2", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
 		self.app = service.app.test_client()
 
 	def tearDown(self):
@@ -47,20 +48,21 @@ class TestWishlistServer(unittest.TestCase):
 		""" Delete a wishlist by ID """
 		wishlist = Wishlist.find_by_name('Wishlist demo 1')[0]
 		wishlist_count = self.get_wishlist_count()
+		Wishlist.logger.info('wishlist to be deleted: ' + wishlist.id)
 		resp = self.app.delete('/wishlists/{}'.format(wishlist.id), content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 		self.assertEqual(len(resp.data),0)
 		new_count = self.get_wishlist_count()
 		self.assertEqual(new_count, wishlist_count - 1)
 
-	def test_delete_wishlist_by_name(self):
-		""" Delete a wishilist by name """
-		wishlist_count = self.get_wishlist_count()
-		resp = self.app.delete('/wishlists/{}'.format('Wishlist demo 1'), content_type='application/json')
-		self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-		self.assertEqual(len(resp.data),0)
-		new_count = self.get_wishlist_count()
-		self.assertEqual(new_count, wishlist_count - 1)
+	# def test_delete_wishlist_by_name(self):
+	# 	""" Delete a wishilist by name """
+	# 	wishlist_count = self.get_wishlist_count()
+	# 	resp = self.app.delete('/wishlists/{}'.format('Wishlist demo 1'), content_type='application/json')
+	# 	self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+	# 	self.assertEqual(len(resp.data),0)
+	# 	new_count = self.get_wishlist_count()
+	# 	self.assertEqual(new_count, wishlist_count - 1)
 		
 	def test_get_wishlists_list(self):
 		""" Get a list of Wishlists """
@@ -71,7 +73,7 @@ class TestWishlistServer(unittest.TestCase):
 
 		
 	def test_query_wishlist_by_user(self):
-		""" Get a list of Wishlists for a User"""
+		""" Get a list of Wishlists for a User and Wishlist Name"""
 		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		self.assertTrue(len(resp.data) > 0)
@@ -82,9 +84,25 @@ class TestWishlistServer(unittest.TestCase):
 		query_item = data[0]
 		self.assertEqual(query_item['user'], 'demo user2')
 
+	def test_query_wishlist_by_user_and_name(self):
+		""" Get a list of Wishlists for a User"""
+		Wishlist("Wishlist demo 3", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
+		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2&wishlist_name=Wishlist demo 3')
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		self.assertTrue(len(resp.data) > 0)
+		print(resp.data)
+		self.assertTrue('Wishlist demo 3' in resp.data)
+		self.assertFalse("Wishlist demo 2" in resp.data)
+		data = json.loads(resp.data)
+		query_item = data[0]
+		self.assertEqual(query_item['user'], 'demo user2')
+
 	def test_get_wishlist_by_id(self):
 		""" Get a wishlist by ID """
-		resp = self.app.get('/wishlists/2/items')
+		wishlist = Wishlist("Wishlist demo 2", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")])
+		wishlist.save()
+
+		resp = self.app.get('/wishlists/' + wishlist.id + '/items')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
 		self.assertEqual(data['name'], "Wishlist demo 2")
@@ -160,22 +178,34 @@ class TestWishlistServer(unittest.TestCase):
 
 	def test_update_wishlist(self):
 		""" Update a Wishlist """
+		wishlist = Wishlist("Wishlist demo 3", "demo user3", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")])
+		wishlist.save()
 		new_wishlist = {'name': 'Wishlist demo 3', 'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
 		data = json.dumps(new_wishlist)
-		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
+		resp = self.app.put('/wishlists/' + wishlist.id, data=data, content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		resp = self.app.get('/wishlists/2/items')
+		resp = self.app.get('/wishlists/' + wishlist.id + '/items')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		new_json = json.loads(resp.data)
 		self.assertEqual(new_json['name'],'Wishlist demo 3')
 		self.assertEqual(new_json['user'],'demo user1')
 		self.assertEqual(new_json['entries'][0]['name'],'test31')
-	def test_update_wishlist_with_no_name(self):
-		""" Update a wishlist with no name """
-		new_wishlist = {'user': 'patty'}
-		data = json.dumps(new_wishlist)
-		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
-		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+	# def test_update_wishlist_with_no_name(self):
+	# 	""" Update a wishlist with no name """
+	# 	# new_wishlist = {'user': 'patty'}
+	# 	# data = json.dumps(new_wishlist)
+	# 	# resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
+	# 	# self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+	# 	wishlist = self.find_by_name('Wishlist demo 1')[0]
+	# 	del wishlist['name']
+	# 	data = json.dumps(wishlist)
+	# 	resp = self.app.put('/wishlists/{}'.format(wishlist['_id']), data=data, content_type='application/json')
+	# 	self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+
+
 	def test_update_wishlist_not_found(self):
 		""" Update a wishlist that can't be found """
 		new_wish = {"name": "timothy's list", "user": "timothy"}
@@ -184,14 +214,14 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 	def test_delete_wishlist_by_user(self):
-	    """ Delete a wishlist by user name  """
-	    user_wishlists = self.get_wishlist_count_by_user('demo user1')
-	    wishlist_count = self.get_wishlist_count()
-	    resp = self.app.delete('/wishlists/demo user1/delete_all', content_type='application/json')
-	    self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-	    self.assertEqual(len(resp.data),0)
-	    new_count = self.get_wishlist_count()
-	    self.assertEqual(new_count, wishlist_count - user_wishlists)
+		""" Delete a wishlist by user name  """
+		user_wishlists = self.get_wishlist_count_by_user('demo user1')
+		wishlist_count = self.get_wishlist_count()
+		resp = self.app.delete('/wishlists/demo user1/delete_all', content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+		self.assertEqual(len(resp.data),0)
+		new_count = self.get_wishlist_count()
+		self.assertEqual(new_count, wishlist_count - user_wishlists)
 
 
 ######################################################################
