@@ -28,8 +28,6 @@ class DataValidationError(Exception):
 	""" Used for an data validation errors when deserializing """
 	pass
 
-
-
 class Wishlist_entry(object):
 	"""
 	Class that represents a Wishlist Entry
