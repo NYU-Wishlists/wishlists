@@ -26,9 +26,9 @@ class TestWishlistServer(unittest.TestCase):
 		self.app=service.app.test_client()
 		Wishlist.init_db()
 		TestWishlistServer.throttle_api()
-		Wishlist(0, "Wishlist demo 1", "demo user1", [service.Wishlist_entry(0, "test11"), service.Wishlist_entry(1, "test12")]).save()
+		Wishlist("Wishlist demo 1", "demo user1", [service.Wishlist_entry(0, "test11"), service.Wishlist_entry(1, "test12")]).save()
 		TestWishlistServer.throttle_api()
-		Wishlist(0, "Wishlist demo 2", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
+		Wishlist("Wishlist demo 2", "demo user2", [service.Wishlist_entry(0, "test21"), service.Wishlist_entry(1, "test22")]).save()
 		TestWishlistServer.throttle_api()
 
 	def tearDown(self):
@@ -124,8 +124,10 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(len(data), wishlist_count + 1)
 		self.assertIn(new_json, data)
 
+	"""id is assigned automatically, no need for this test"""
+	"""
 	def test_spoof_wishlist_id(self):
-		""" Create a Wishlist passing in an id """
+		"" Create a Wishlist passing in an id ""
 		# add a new wishlist
 		new_wishlist = {'id': 999,  'name': 'Wishlist demo 3', 'user': 'demo user2', 'entries': [{'id':0,'name':'test31'}]}
 		data = json.dumps(new_wishlist)
@@ -140,7 +142,8 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(new_json['name'], 'Wishlist demo 3')
 		self.assertEqual(new_json['user'], 'demo user2')
 		self.assertEqual(new_json['entries'][0]['name'], 'test31')
-
+	"""
+	
 	def test_create_wishlist_with_no_name(self):
 		""" Create a Wishlist with the name missing """
 		new_wishlist = {'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
