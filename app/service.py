@@ -178,8 +178,8 @@ class WishlistResource(Resource):
         app.logger.info('Request to Delete a wishlist with id [%s]', wishlist_id)
         wishlist = Wishlist.find(wishlist_id)
         if wishlist:
-            wishlist.delete()
-        return '', status.HTTP_204HTTP_204_NO_CONTENT
+            wishlist.delete_wishlist()
+        return '', status.HTTP_204_NO_CONTENT
 
 	#------------------------------------------------------------------
     # UPDATE A WISHLIST
