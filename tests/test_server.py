@@ -43,12 +43,18 @@ class TestWishlistServer(unittest.TestCase):
             sleep(amount)
 
     # FlaskRESTPlus takes over the index so we can't test it
-	#def test_index(self):
+	# def test_index(self):
 	#	resp = self.app.get('/')
 	#	self.assertEqual(resp.status_code, status.HTTP_200_OK)
 	#	data = json.loads(resp.data)
 	#	self.assertEqual(data['name'], 'Wishlists REST API Service')
 
+
+        def test_healthcheck(self):
+                """ Making Server is till alive """
+                resp = self.app.get('/healthcheck')
+                self.assertEqual(resp.status_code, status.HTTP_200_OK)
+                self.assertIn('Healthy', resp.data)
 
 	def test_delete_wishlist(self):
 		""" Delete a wishlist by ID """
