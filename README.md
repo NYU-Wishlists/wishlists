@@ -4,8 +4,11 @@ Wishlists RESTful service allows customers to create a collection of products th
 
 Team: Hu Jianyuan, Omer Katz, Sakada Lim, Minh Lai, Doyeon Kong
 
-# Adding Travis CI Badge
+# Add Travis CI Badge
 [![Build Status](https://travis-ci.org/NYU-Wishlists/wishlists.svg?branch=master)](https://travis-ci.org/NYU-Wishlists/wishlists)
+
+# Add Codecov Badge
+[![codecov](https://codecov.io/gh/NYU-Wishlists/wishlists/branch/master/graph/badge.svg)](https://codecov.io/gh/NYU-Wishlists/wishlists)
 
 ## Prerequisite Installation using Vagrant
 
