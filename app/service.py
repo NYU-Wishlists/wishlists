@@ -29,6 +29,19 @@ HTTP_400_BAD_REQUEST = 400
 HTTP_404_NOT_FOUND = 404
 HTTP_409_CONFLICT = 409
 
+
+######################################################################
+# Configure Swagger before initializing it
+######################################################################
+api = Api(app,
+version = '1.0.0',
+title = 'Wishlists RESTful API Service',
+description = "This is a Wishlists server",
+#endpoint = '',
+route = '/'
+)
+
+
 ######################################################################
 # Error Handlers
 ######################################################################
