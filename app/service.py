@@ -133,7 +133,7 @@ class WishlistCollection(Resource):
 ######################################################################
 #  PATH: /wishlists/{id}
 ######################################################################
-@ns.route('/<int:wishlist_id>')
+@ns.route('/<wishlist_id>')
 @ns.param('wishlist_id','The Wishlist identifier')
 class WishlistResource(Resource):
     """
@@ -141,7 +141,7 @@ class WishlistResource(Resource):
 
     Allows the manipulation of a single wishlists
     GET /wishlist/{id} - Returns a wishlist with the id
-    PUT /wishlist/{id} - Returns a wishlist with the id
+    PUT /wishlist/{id} - Update a wishlist with the id
     DELETE /wishlist/{id} - Return a wishlist with the id
     """
 
@@ -158,7 +158,7 @@ class WishlistResource(Resource):
         This endpoint will return a wishlist based on it's id
         """
         app.logger.info("Request to retrieve a wishlist with id [%s]", wishlist_id)
-        wishlist= Wishlist.find(wishlist_id)
+        wishlist = Wishlist.find(wishlist_id)
         if not wishlist:
             raise NotFound("Wishlist with id '{}' was not found" .format(wishlist_id))
         return wishlist.serialize(), status.HTTP_200_OK

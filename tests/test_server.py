@@ -51,7 +51,7 @@ class TestWishlistServer(unittest.TestCase):
 
 	"""
 	def test_delete_wishlist(self):
-		# Delete a wishlist by ID 
+		# Delete a wishlist by ID
 		wishlist = Wishlist.find_by_name('Wishlist demo 1')[0]
 		wishlist_count = self.get_wishlist_count()
 		resp = self.app.delete('/wishlists/{}'.format(wishlist.id), content_type='application/json')
@@ -67,9 +67,9 @@ class TestWishlistServer(unittest.TestCase):
 		resp = self.app.get('/wishlists')
 		self.assertEqual(resp.status_code, status.HTTP_200_OK)
 		data = json.loads(resp.data)
-		self.assertEqual(len(data), 2)	
+		self.assertEqual(len(data), 2)
 
-		
+
 	def test_query_wishlist_by_user(self):
 		""" Get a list of Wishlists for a User"""
 		resp = self.app.get('/wishlists', query_string='wishlist_user=demo user2')
@@ -143,7 +143,7 @@ class TestWishlistServer(unittest.TestCase):
 		self.assertEqual(new_json['user'], 'demo user2')
 		self.assertEqual(new_json['entries'][0]['name'], 'test31')
 	"""
-	
+
 	def test_create_wishlist_with_no_name(self):
 		""" Create a Wishlist with the name missing """
 		new_wishlist = {'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
