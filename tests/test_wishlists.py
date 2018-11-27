@@ -37,6 +37,15 @@ class TestWishlists(unittest.TestCase):
 		self.assertEqual(wishlist.name, "mike's wishlist")
 		self.assertEqual(wishlist.user, "mike")
 
+	def test_create_a_wishlist_without_name(self):
+		"""Create a wishlist with no name, assert Error"""
+		wishlist_empty = Wishlist()
+		self.assertRaises(DataValidationError, wishlist_empty.create)
+		wishlist_no_name = Wishlist(wishlist_name=None)
+		self.assertRaises(DataValidationError, wishlist_no_name.create)
+		wishlist_no_user = Wishlist(wishlist_user=None)
+		self.assertRaises(DataValidationError, wishlist_no_user.create)
+
 	def test_add_a_wishlist(self):
 		""" Create a wishlist and add it to the database """
 		wishlists = Wishlist.all()

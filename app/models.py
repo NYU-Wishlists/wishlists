@@ -37,16 +37,16 @@ class Wishlist_entry(object):
 	"""
 	lock = threading.Lock()
 	index = 0
-	
+
 	def __init__(self, entry_id=0, item_name=''):
 		""" Initialize a wishlist entry """
 		self.id = entry_id
 		self.name = item_name
-	
+
 	def serialize(self):
 		""" Serializes a Wishlist_entry into a dictionary """
 		return {"id": self.id, "name": self.name}
-  
+
 
 class Wishlist(object):
 	logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class Wishlist(object):
 		self.user = wishlist_user
 		self.entries = wishlist_entries
 
-	def equals(self, other): 
+	def equals(self, other): # pragma: no cover
 		return self.__dict__ == other.__dict__
 
 	def create(self):
@@ -140,11 +140,11 @@ class Wishlist(object):
 	It is not yet necessary to be able to remove individual wishlist entries
 	as this is accomplished by updating the entire wishlist
 
-	# method to delete a product entry from a wishlist's product list		
+	# method to delete a product entry from a wishlist's product list
 	def delete_entry(self, ID):
 		for i in self.entries:
 			if i.id == ID:
-				self.entries.remove(i) 
+				self.entries.remove(i)
 
 	"""
 
@@ -164,13 +164,13 @@ class Wishlist(object):
 			raise DataValidationError('Invalid wishlist: missing ' + err.args[0])
 		except TypeError as err:
 			raise DataValidationError('Invalid wishlist: body of request contained bad or no data')
-		
+
 		# if there is no id and the data has one, assign it
 		if not self.id and '_id' in data:
 			self.id = data['_id']
 
 		return self
-	
+
 	def serialize(self):
 		""" Serializes a wishlist into a dictionary """
 		return {"id": self.id, "name": self.name, "user": self.user, "entries": [entry.serialize() for entry in self.entries]}
@@ -204,7 +204,7 @@ class Wishlist(object):
 		""" Removes all of the Wishlists from the database """
 		for document in cls.database:
 			document.delete()
-		
+
 	@classmethod
 	def all(cls):
 		""" Returns all of the Wishlists in the database """
