@@ -181,6 +181,36 @@ class WishlistResource(Resource):
             wishlist.delete()
         return '', status.HTTP_204HTTP_204_NO_CONTENT
 
+	#------------------------------------------------------------------
+    # UPDATE A WISHLIST
+    #------------------------------------------------------------------
+    @ns.doc('update_wishlist')
+    @ns.expect(wishlist_model)
+    @ns.response(400, 'The posted data was not valid')
+    @ns.response(200, 'Wishlist updated successfully')
+    @ns.response(404, 'Whislist not found')
+    def put(self, wishlist_id):
+        """
+        update a Wishlist
+
+        This endpoint will update a Wishlist based on it's id
+        """
+        app.logger.info('Request to Update a wishlist with id [%s]', wishlist_id)
+        wishlist = Wishlist.find(wishlist_id)
+        if wishlist:
+            app.logger.info('Payload to update = %s', api.payload)
+            wishlist.deserialize(api.payload)
+            if wishlist.name == None or wishlist.name == "":
+                app.logger.info('Payload to update missing name')
+                return 'Missing wishlist name', status.HTTP_400_BAD_REQUEST
+            wishlist.save()
+        else:
+            app.logger.info('Wishlist with id [%s] not found', wishlist_id)
+            return '', status.HTTP_404_NOT_FOUND
+        app.logger.info('Wishlist with  id [%s] updated', wishlist.id)
+        return '', status.HTTP_200_OK
+
+
 ######################################################################
 #  PATH: /wishlists/{user_name}/delete_all
 ######################################################################

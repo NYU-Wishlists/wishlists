@@ -165,36 +165,6 @@ class TestWishlistServer(unittest.TestCase):
 		resp = self.app.post('/wishlists', data=data, content_type='application/json')
 		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-	"""
-	def test_update_wishlist(self):
-		" Update a Wishlist ""
-		new_wishlist = {'name': 'Wishlist demo 3', 'user': 'demo user1', 'entries':[{'id': 0, 'name': "test31"}, {'id': 1, 'name': "test32"}]}
-		data = json.dumps(new_wishlist)
-		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
-		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		resp = self.app.get('/wishlists/2/items')
-		self.assertEqual(resp.status_code, status.HTTP_200_OK)
-		new_json = json.loads(resp.data)
-		self.assertEqual(new_json['name'],'Wishlist demo 3')
-		self.assertEqual(new_json['user'],'demo user1')
-		self.assertEqual(new_json['entries'][0]['name'],'test31')
-	"""
-
-	"""
-	def test_update_wishlist_with_no_name(self):
-		"" Update a wishlist with no name "
-		new_wishlist = {'user': 'patty'}
-		data = json.dumps(new_wishlist)
-		resp = self.app.put('/wishlists/2', data=data, content_type='application/json')
-		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-	def test_update_wishlist_not_found(self):
-		"" Update a wishlist that can't be found ""
-		new_wish = {"name": "timothy's list", "user": "timothy"}
-		data = json.dumps(new_wish)
-		resp = self.app.put('/wishlists/0', data=data, content_type='application/json')
-		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
-	"""
-
 	def test_delete_wishlist_by_user(self):
 	    """ Delete a wishlist by user name  """
 	    user_wishlists = self.get_wishlist_count_by_user('demo user1')
@@ -204,6 +174,60 @@ class TestWishlistServer(unittest.TestCase):
 	    self.assertEqual(len(resp.data),0)
 	    new_count = self.get_wishlist_count()
 	    self.assertEqual(new_count, wishlist_count - user_wishlists)
+
+	def test_update_wishlist(self):
+		""" Update a Wishlist """
+		# create a new wishlist to update after
+		new_wishlist = {'name': 'Wishlist demo 3', 'user':'demo user3', 'entries':[{'id':0,'name':'test31'}]}
+		data = json.dumps(new_wishlist)
+		resp = self.app.post('/wishlists', data=data, content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+		# Make sure location header is set
+		location = resp.headers.get('Location', None)
+		self.assertIsNotNone(location)
+		# Check the data is correct
+		new_json = json.loads(resp.data)
+		wishlist_id = new_json['id']
+		# update wish list
+		updated_wishlist = {'name': 'Wishlist demo updated 3', 'user':'demo user2', 'entries':[{'id':0,'name':'test31 update'},{'id':1,'name':'test32'}]}
+		data = json.dumps(updated_wishlist)
+		resp = self.app.put('/wishlists/' + wishlist_id, data=data, content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		resp = self.app.get('/wishlists/' + wishlist_id)
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		new_json2 = json.loads(resp.data)
+		self.assertEqual(new_json2['name'],'Wishlist demo updated 3')
+		self.assertEqual(new_json2['user'],'demo user2')
+
+
+
+	def test_update_wishlist_with_no_name(self):
+		""" Update a wishlist with no name """
+		# create a new wishlist to update after
+		new_wishlist = {'name': 'Wishlist demo 3', 'user':'demo user3', 'entries':[{'id':0,'name':'test31'}]}
+		data = json.dumps(new_wishlist)
+		resp = self.app.post('/wishlists', data=data, content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+		# Make sure location header is set
+		location = resp.headers.get('Location', None)
+		self.assertIsNotNone(location)
+		# Check the data is correct
+		new_json = json.loads(resp.data)
+		wishlist_id = new_json['id']
+		# update wish list  with an empy name
+		updated_wishlist = {'name': '', 'user':'demo user2', 'entries':[{'id':0,'name':'test31 update'},{'id':1,'name':'test32'}]}
+		data = json.dumps(updated_wishlist)
+		resp = self.app.put('/wishlists/' + wishlist_id, data=data, content_type='application/json')
+		self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+	def test_update_wishlist_not_found(self):
+		""" Update a wishlist that can't be found """
+		new_wish = {"name": "timothy's list", "user": "timothy"}
+		data = json.dumps(new_wish)
+		resp = self.app.put('/wishlists/0', data=data, content_type='application/json')
+		self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
+
 
 
 ######################################################################
