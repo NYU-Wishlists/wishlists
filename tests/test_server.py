@@ -175,6 +175,8 @@ class TestWishlistServer(unittest.TestCase):
 	    new_count = self.get_wishlist_count()
 	    self.assertEqual(new_count, wishlist_count - user_wishlists)
 
+    # Test update wishlost Resource
+    #TODO: query an exsisting wishlist instead of creating a new one for each test
 	def test_update_wishlist(self):
 		""" Update a Wishlist """
 		# create a new wishlist to update after
