@@ -70,7 +70,7 @@ Vagrant.configure(2) do |config|
 	python -m pip install --upgrade pip #fix pip upgrade problem
     # Install app dependencies
     cd /vagrant
-    pip install -r requirements.txt --ignore-installed
+    sudo pip install -r requirements.txt
   SHELL
 
 

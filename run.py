@@ -19,4 +19,4 @@ if __name__ == "__main__":
     print " W I S H L I S T   S E R V I C E   R U N N I N G"
     print "****************************************"
     service.initialize_logging()
-app.run(host=HOST, port=int(PORT), debug=DEBUG)
+    app.run(host=HOST, port=int(PORT), debug=DEBUG)
