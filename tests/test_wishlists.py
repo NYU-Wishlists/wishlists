@@ -107,8 +107,8 @@ class TestWishlists(unittest.TestCase):
         wishlist.save()
         self.assertEqual(len(Wishlist.all()), 0)
 
-    def test_test(self):
-        """ TEST TEST """
+    def test_update_error(self):
+        """ TEST failure of the update tr-catch """
         wishlist = Wishlist("mike's wishlist", "mike")
         wishlist.save()
         self.assertNotEqual(wishlist.id, None)
@@ -119,11 +119,12 @@ class TestWishlists(unittest.TestCase):
         wishlist.name = "mike's hard wishlist"
         wishlist.save()
         # Fetch it back and make sure the id and data hasn't changed
-        
+
         wishlists = Wishlist.all()
         self.assertEqual(len(wishlists), 1)
         self.assertEqual(wishlists[0].name, "mike's wishlist")
         self.assertEqual(wishlists[0].id, og_id)
+
 
 
     # """ Currently a redundant test case but may change in the future """
