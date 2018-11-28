@@ -107,6 +107,23 @@ class TestWishlists(unittest.TestCase):
         wishlist.save()
         self.assertEqual(len(Wishlist.all()), 0)
 
+    def test_test(self):
+        """ TEST TEST """
+        wishlist = Wishlist("mike's wishlist", "mike")
+        wishlist.save()
+        self.assertNotEqual(wishlist.id, None)
+        og_id = wishlist.id
+
+        #change its ID before updating it to trigger try-catch block
+        wishlist.id = "asdf123"
+        wishlist.name = "mike's hard wishlist"
+        wishlist.save()
+        # Fetch it back and make sure the id and data hasn't changed
+        
+        wishlists = Wishlist.all()
+        self.assertEqual(len(wishlists), 1)
+        self.assertEqual(wishlists[0].name, "mike's wishlist")
+        self.assertEqual(wishlists[0].id, og_id)
 
 
     # """ Currently a redundant test case but may change in the future """
