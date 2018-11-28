@@ -31,7 +31,7 @@ api = Api(app,
           version='1.0.0',
           title='Wishlist REST API Service',
           description='This is a Wishlist store server.',
-          doc='/apidocs/'
+          doc='/'
           # prefix='/api'
           )
 
@@ -40,7 +40,13 @@ api = Api(app,
 ns = api.namespace('wishlists', description='Wishlist operations')
 
 # Define the model so that the docs reflect what can be sent
+list_item = api.model('Item', {
+   'id': fields.Integer,
+   'name': fields.String
+})
+
 wishlist_model = api.model('Wishlist', {
+  
     'id': fields.String(readOnly=True,
                         description='The unique id assigned internally by service'),
     'name': fields.String(required=True,
