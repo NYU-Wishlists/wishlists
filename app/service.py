@@ -40,14 +40,10 @@ ns = api.namespace('wishlists', description='Wishlist operations')
 
 # Define the model so that the docs reflect what can be sent
 wishlist_model = api.model('Wishlist', {
-    'id': fields.String(readOnly=True,
-                         description='The unique id assigned internally by service'),
-    'name': fields.String(required=True,
-                          description='The name of the Wishlist'),
-    'user': fields.String(required=True,
-                              description='The owner of the Wishlist'),
-    'entries': fields.List(required=True,
-                                description='The items of the Wishlist')
+    'id': fields.String(readOnly=True, description='The unique id assigned internally by service'),
+    'name': fields.String(required=True,description='The name of the Wishlist'),
+    'user': fields.String(required=True, description='The owner of the Wishlist'),
+    'entries': fields.List(fields.Nested({'a':fields.String}), required=True, description='The items of the Wishlist')
 })
 
 
