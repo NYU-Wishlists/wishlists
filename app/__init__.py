@@ -24,6 +24,6 @@ app.logger.info('Logging established')
 
 
 @app.before_first_request
-def init_db(dbname="wishlsits"):
+def init_db(dbname="wishlists"):
 	""" Initlaize the model """
 	Wishlist.init_db(dbname)
