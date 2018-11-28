@@ -53,7 +53,7 @@ wishlist_model = api.model('Wishlist', {
                           description='The name of the Wishlist'),
     'user': fields.String(required=True,
                           description='The owner of the Wishlist'),
-    'entries': fields.Boolean(required=True,
+    'entries': fields.List(fields.Nested(list_item), required=True,
                               description='The items of the Wishlist')
 })
 
@@ -100,6 +100,7 @@ class WishlistCollection(Resource):
     # ------------------------------------------------------------------
     @ns.doc('list_wishlists')
     @ns.param('wishlist_user', 'List Wishlists of a user')
+    @ns.param('wishlist_name', 'Show wishlist with this name')
     @ns.marshal_with(wishlist_model)
     def get(self):
         """ Retrieves all the wishlists """
