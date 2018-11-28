@@ -30,7 +30,7 @@ api = Api(app,
           version='1.0.0',
           title='Wishlist REST API Service',
           description='This is a Wishlist store server.',
-          doc='/apidocs/'
+          doc='/'
           # prefix='/api'
          )
 
