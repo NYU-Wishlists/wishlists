@@ -183,8 +183,7 @@ class WishlistResource(Resource):
             "Request to retrieve a wishlist with id [%s]", wishlist_id)
         wishlist = Wishlist.find(wishlist_id)
         if not wishlist:
-            raise NotFound(
-                "Wishlist with id '{}' was not found" .format(wishlist_id))
+            api.abort(status.HTTP_404_NOT_FOUND, "Wishlist with id '{}' was not found" .format(wishlist_id))
         return wishlist.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------
@@ -228,11 +227,11 @@ class WishlistResource(Resource):
             wishlist.deserialize(api.payload)
             if wishlist.name == None or wishlist.name == "":
                 app.logger.info('Payload to update missing name')
-                return 'Missing wishlist name', status.HTTP_400_BAD_REQUEST
+                api.abort(status.HTTP_400_BAD_REQUEST, "Missing wishlist name")
             wishlist.save()
         else:
             app.logger.info('Wishlist with id [%s] not found', wishlist_id)
-            return '', status.HTTP_404_NOT_FOUND
+            api.abort(status.HTTP_404_NOT_FOUND, "Wishlist with id {} not found".format(wishlist_id))
         app.logger.info('Wishlist with  id [%s] updated', wishlist.id)
         return '', status.HTTP_200_OK
 
