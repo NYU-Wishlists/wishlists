@@ -8,16 +8,17 @@ from app.models import Wishlist, Wishlist_entry, DataValidationError
 
 VCAP_SERVICES = {
     'cloudantNoSQLDB': [
-                {'credentials': {
-                    'username': 'admin',
-                    'password': 'pass',
-                    'host': 'localhost',
-                    'port': 5984,
-                    'url': 'http://admin:pass@localhost:5984'
-                }
-                }
+        {'credentials': {
+            'username': 'admin',
+            'password': 'pass',
+            'host': 'localhost',
+            'port': 5984,
+            'url': 'http://admin:pass@localhost:5984'
+            }
+        }
     ]
 }
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -107,6 +108,39 @@ class TestWishlists(unittest.TestCase):
         wishlist.save()
         self.assertEqual(len(Wishlist.all()), 0)
 
+    def test_update_error(self):
+        """ TEST failure of the update try-catch """
+        wishlist = Wishlist("mike's wishlist", "mike")
+        wishlist.save()
+        self.assertNotEqual(wishlist.id, None)
+        og_id = wishlist.id
+
+        #change its ID before updating it to trigger try-catch block
+        wishlist.id = "asdf123"
+        wishlist.name = "mike's hard wishlist"
+        wishlist.save()
+        # Fetch it back and make sure the id and data hasn't changed
+        wishlists = Wishlist.all()
+        self.assertEqual(len(wishlists), 1)
+        self.assertEqual(wishlists[0].name, "mike's wishlist")
+        self.assertEqual(wishlists[0].id, og_id)
+
+    def test_delete_error(self):
+        """ Test failure of the delete try-catch"""
+        wishlist = Wishlist("mike's wishlist", "mike")
+        wishlist.save()
+        self.assertEqual(len(Wishlist.all()), 1)
+        og_id = wishlist.id
+        # modify id to trigger try-catch
+        wishlist.id = "asdf123"
+        # delete the wishlist and make sure it failed and is still int the database
+        wishlist.delete_wishlist()
+        self.assertEqual(len(Wishlist.all()), 1)
+        # Fetch it back and make sure the id and data hasn't changed
+        wishlists = Wishlist.all()
+        self.assertEqual(len(wishlists), 1)
+        self.assertEqual(wishlists[0].name, "mike's wishlist")
+        self.assertEqual(wishlists[0].id, og_id)
 
 
     # """ Currently a redundant test case but may change in the future """
