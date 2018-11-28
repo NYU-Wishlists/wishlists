@@ -1,6 +1,7 @@
 # wishlists
 
 [![Build Status](https://travis-ci.org/NYU-Wishlists/wishlists.svg?branch=master)](https://travis-ci.org/NYU-Wishlists/wishlists)
+[![codecov](https://codecov.io/gh/NYU-Wishlists/wishlists/branch/master/graph/badge.svg)](https://codecov.io/gh/NYU-Wishlists/wishlists)
 
 Wishlists RESTful service allows customers to create a collection of products that they wish they had the money to purchase.
 
@@ -56,7 +57,7 @@ You should see all of the tests passing with a code coverage report at the end. 
 
 ## Services
 
-- **Create** a wishlist 
+- **Create** a wishlist
 
   ```
   POST /wishlists
@@ -105,11 +106,11 @@ You should see all of the tests passing with a code coverage report at the end. 
   DELETE /wishlists/<string:user_name>/delete_all
   ```
 
-- **Try out** the demo 
+- **Try out** the demo
 
   ```
   POST /wishlists/demo
-  ... 
+  ...
   ```
 
 ## Shutdown
