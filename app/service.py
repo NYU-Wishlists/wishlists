@@ -46,7 +46,7 @@ wishlist_model = api.model('Wishlist', {
                           description='The name of the Wishlist'),
     'user': fields.String(required=True,
                               description='The owner of the Wishlist'),
-    'entries': fields.Boolean(required=True,
+    'entries': fields.List(required=True,
                                 description='The items of the Wishlist')
 })
 
