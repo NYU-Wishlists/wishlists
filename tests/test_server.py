@@ -275,10 +275,6 @@ class TestWishlistServer(unittest.TestCase):
         self.assertEqual(new_count,0)
 
 
-######################################################################
-# Utility functions
-######################################################################
-
     def get_wishlist_count(self):
         """ save the current number of wishlists """
         resp = self.app.get('/wishlists', content_type='application/json')
@@ -296,6 +292,7 @@ class TestWishlistServer(unittest.TestCase):
         data = json.loads(resp.data)
         return len(data)
 
+    
 
 ######################################################################
 #   M A I N
