@@ -8,16 +8,17 @@ from app.models import Wishlist, Wishlist_entry, DataValidationError
 
 VCAP_SERVICES = {
     'cloudantNoSQLDB': [
-                {'credentials': {
-                    'username': 'admin',
-                    'password': 'pass',
-                    'host': 'localhost',
-                    'port': 5984,
-                    'url': 'http://admin:pass@localhost:5984'
-                }
-                }
+        {'credentials': {
+            'username': 'admin',
+            'password': 'pass',
+            'host': 'localhost',
+            'port': 5984,
+            'url': 'http://admin:pass@localhost:5984'
+            }
+        }
     ]
 }
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
