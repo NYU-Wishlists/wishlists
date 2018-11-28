@@ -264,7 +264,7 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
-	def init_db(dbname='wishlsits'):
+	def init_db(dbname='wishlists'):
 		"""
 		Initialized Coundant database connection
 		"""
