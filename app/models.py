@@ -192,12 +192,12 @@ class Wishlist(object):
 		cls.client.disconnect()
 
 
-	@classmethod
-	def __next_index(cls):
-		""" Generates the next index in a continual sequence """
-		with cls.lock:
-			cls.index += 1
-		return cls.index
+	# @classmethod
+	# def __next_index(cls):
+	# 	""" Generates the next index in a continual sequence """
+	# 	with cls.lock:
+	# 		cls.index += 1
+	# 	return cls.index
 
 	@classmethod
 	def remove_all(cls):
