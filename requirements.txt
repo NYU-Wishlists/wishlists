@@ -21,3 +21,8 @@ codecov==2.0.15
 
 # Cloud
 cloudant==2.9.0
+
+# BDD
+selenium==3.3.1
+behave==1.2.5
+compare==0.2b0
