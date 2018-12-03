@@ -20,7 +20,8 @@ from flask import jsonify, request, json, url_for, make_response, abort, Respons
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields
 from werkzeug.exceptions import NotFound
-from app.models import Wishlist, Wishlist_entry, DataValidationError # DatabaseConnectionError
+# DatabaseConnectionError
+from app.models import Wishlist, Wishlist_entry, DataValidationError
 from . import app
 
 ######################################################################
@@ -32,7 +33,7 @@ api = Api(app,
           description='This is a Wishlist store server.',
           doc='/'
           # prefix='/api'
-         )
+          )
 
 
 # This namespace is the start of the path i.e., /wishlists
@@ -45,10 +46,15 @@ list_item = api.model('Item', {
 })
 
 wishlist_model = api.model('Wishlist', {
-    'id': fields.String(readOnly=True, description='The unique id assigned internally by service'),
-    'name': fields.String(required=True,description='The name of the Wishlist'),
-    'user': fields.String(required=True, description='The owner of the Wishlist'),
-    'entries': fields.List(fields.Nested(list_item), required=True, description='The items of the Wishlist')
+
+    'id': fields.String(readOnly=True,
+                        description='The unique id assigned internally by service'),
+    'name': fields.String(required=True,
+                          description='The name of the Wishlist'),
+    'user': fields.String(required=True,
+                          description='The owner of the Wishlist'),
+    'entries': fields.List(fields.Nested(list_item), required=True,
+                              description='The items of the Wishlist')
 })
 
 
@@ -60,7 +66,8 @@ def request_validation_error(error):
     """ Handles Value Errors from bad data """
     message = error.message or str(error)
     app.logger.info(message)
-    return {'status':400, 'error': 'Bad Request', 'message': message}, 400
+    return {'status': 400, 'error': 'Bad Request', 'message': message}, 400
+
 
 """
 @api.errorhandler(DatabaseConnectionError)
@@ -74,11 +81,12 @@ def database_connection_error(error):
 ######################################################################
 # GET HEALTH CHECK
 ######################################################################
+
+
 @app.route('/healthcheck')
 def healthcheck():
     """ Let them know our heart is still beating """
     return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
-
 
 
 ######################################################################
@@ -87,11 +95,12 @@ def healthcheck():
 @ns.route('/', strict_slashes=False)
 class WishlistCollection(Resource):
     """ Handles all interactions with collections of Wishlists """
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # LIST ALL WISHLISTS
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @ns.doc('list_wishlists')
-    @ns.param('wishlist_user','List Wishlists of a user')
+    @ns.param('wishlist_user', 'List Wishlists of a user')
+    @ns.param('wishlist_name', 'Show wishlist with this name')
     @ns.marshal_with(wishlist_model)
     def get(self):
         """ Retrieves all the wishlists """
@@ -117,15 +126,15 @@ class WishlistCollection(Resource):
         app.logger.info('[%s] Wishlists returned', len(wishlists))
         return wishlists, status.HTTP_200_OK
 
-
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # ADD A NEW WISHLIST
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
+
     @ns.doc('create_wishlists')
     @ns.expect(wishlist_model)
     @ns.response(400, 'The posted data was not valid')
     @ns.response(201, 'Wishlist created successfully')
-    @ns.marshal_with(wishlist_model, code = 201)
+    @ns.marshal_with(wishlist_model, code=201)
     def post(self):
         """
         Creates a Wishlist
@@ -138,14 +147,17 @@ class WishlistCollection(Resource):
         wishlist.deserialize(api.payload)
         wishlist.save()
         app.logger.info('Wishlist with new id [%s] saved', wishlist.id)
-        location_url = api.url_for(WishlistResource, wishlist_id=wishlist.id, _external=True)
-        return wishlist.serialize(), status.HTTP_201_CREATED, {'Location':location_url}
+        location_url = api.url_for(
+            WishlistResource, wishlist_id=wishlist.id, _external=True)
+        return wishlist.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
 
 ######################################################################
 #  PATH: /wishlists/{id}
 ######################################################################
+
+
 @ns.route('/<wishlist_id>')
-@ns.param('wishlist_id','The Wishlist identifier')
+@ns.param('wishlist_id', 'The Wishlist identifier')
 class WishlistResource(Resource):
     """
     WishlistResource class
@@ -156,9 +168,9 @@ class WishlistResource(Resource):
     DELETE /wishlist/{id} - Return a wishlist with the id
     """
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # RETRIEVE A WISHLIST
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @ns.doc('get_wishlist')
     @ns.response(404, 'Wishlist not found')
     @ns.marshal_with(wishlist_model)
@@ -168,33 +180,35 @@ class WishlistResource(Resource):
 
         This endpoint will return a wishlist based on it's id
         """
-        app.logger.info("Request to retrieve a wishlist with id [%s]", wishlist_id)
+        app.logger.info(
+            "Request to retrieve a wishlist with id [%s]", wishlist_id)
         wishlist = Wishlist.find(wishlist_id)
         if not wishlist:
-            raise NotFound("Wishlist with id '{}' was not found" .format(wishlist_id))
+            api.abort(status.HTTP_404_NOT_FOUND, "Wishlist with id '{}' was not found" .format(wishlist_id))
         return wishlist.serialize(), status.HTTP_200_OK
 
-
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # DELETE A WISHLIST
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
+
     @ns.doc('delete_wishlist')
-    @ns.response(204,'Wishlist deleted')
+    @ns.response(204, 'Wishlist deleted')
     def delete(self, wishlist_id):
         """
         Delete a Wishlist
 
         This endpoint will delete a Wishlist based on it's id
         """
-        app.logger.info('Request to Delete a wishlist with id [%s]', wishlist_id)
+        app.logger.info(
+            'Request to Delete a wishlist with id [%s]', wishlist_id)
         wishlist = Wishlist.find(wishlist_id)
         if wishlist:
             wishlist.delete_wishlist()
         return '', status.HTTP_204_NO_CONTENT
 
-	#------------------------------------------------------------------
+        # ------------------------------------------------------------------
     # UPDATE A WISHLIST
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @ns.doc('update_wishlist')
     @ns.expect(wishlist_model)
     @ns.response(400, 'The posted data was not valid')
@@ -206,18 +220,19 @@ class WishlistResource(Resource):
 
         This endpoint will update a Wishlist based on it's id
         """
-        app.logger.info('Request to Update a wishlist with id [%s]', wishlist_id)
+        app.logger.info(
+            'Request to Update a wishlist with id [%s]', wishlist_id)
         wishlist = Wishlist.find(wishlist_id)
         if wishlist:
             app.logger.info('Payload to update = %s', api.payload)
             wishlist.deserialize(api.payload)
             if wishlist.name == None or wishlist.name == "":
                 app.logger.info('Payload to update missing name')
-                return 'Missing wishlist name', status.HTTP_400_BAD_REQUEST
+                api.abort(status.HTTP_400_BAD_REQUEST, "Missing wishlist name")
             wishlist.save()
         else:
             app.logger.info('Wishlist with id [%s] not found', wishlist_id)
-            return '', status.HTTP_404_NOT_FOUND
+            api.abort(status.HTTP_404_NOT_FOUND, "Wishlist with id {} not found".format(wishlist_id))
         app.logger.info('Wishlist with  id [%s] updated', wishlist.id)
         return '', status.HTTP_200_OK
 
@@ -226,12 +241,12 @@ class WishlistResource(Resource):
 #  PATH: /wishlists/{user_name}/delete_all
 ######################################################################
 @ns.route('/<string:user_name>/delete_all')
-@ns.param('user_name','The Wishlist owner')
+@ns.param('user_name', 'The Wishlist owner')
 class DeleteAllResource(Resource):
     """ DeleteAll actions on Wishlists"""
     @ns.doc('delete_all_wishlists_of_a_user')
     @ns.response(204, 'All wishlists of the user deleted')
-    def delete(self,user_name):
+    def delete(self, user_name):
         """ Removes all wishlists of a user"""
         app.logger.info('Request to delete all wishlists of a user')
         wishlists = Wishlist.find_by_user(user_name)
@@ -250,34 +265,36 @@ def wishlists_reset():
     return make_response('', status.HTTP_204_NO_CONTENT)
 
 
-
 ######################################################################
 #   U T I L I T Y   F U N C T I O N S
 ######################################################################
 
-def check_content_type(content_type):
+def check_content_type(content_type): # pragma: no cover
     """ Checks that the media type is correct """
     if request.headers['Content-Type'] == content_type:
         return
-    app.logger.error('Invalid Content-Type: %s', request.headers['Content-Type'])
-    abort(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, 'Content-Type must be {}'.format(content_type))
+    app.logger.error('Invalid Content-Type: %s',
+                     request.headers['Content-Type'])
+    abort(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+          'Content-Type must be {}'.format(content_type))
 
-def initialize_logging(log_level=logging.INFO):
-	""" Initialized the default logging to STDOUT """
-	if not app.debug:
-		print 'Setting up logging...'
-		# Set up default logging for submodules to use STDOUT
-		# datefmt='%m/%d/%Y %I:%M:%S %p'
-		fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-		logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
-		# Make a new log handler that uses STDOUT
-		handler = logging.StreamHandler(sys.stdout)
-		handler.setFormatter(logging.Formatter(fmt))
-		handler.setLevel(log_level)
-		# Remove the Flask default handlers and use our own
-		handler_list = list(app.logger.handlers)
-		for log_handler in handler_list:
-			app.logger.removeHandler(log_handler)
-		app.logger.addHandler(handler)
-		app.logger.setLevel(log_level)
-		app.logger.info('Logging handler established')
+
+def initialize_logging(log_level=logging.INFO): # pragma: no cover
+    """ Initialized the default logging to STDOUT """
+    if not app.debug:
+        print 'Setting up logging...'
+            # Set up default logging for submodules to use STDOUT
+            # datefmt='%m/%d/%Y %I:%M:%S %p'
+        fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+        logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
+            # Make a new log handler that uses STDOUT
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(logging.Formatter(fmt))
+        handler.setLevel(log_level)
+            # Remove the Flask default handlers and use our own
+        handler_list = list(app.logger.handlers)
+        for log_handler in handler_list:
+            app.logger.removeHandler(log_handler)
+        app.logger.addHandler(handler)
+        app.logger.setLevel(log_level)
+        app.logger.info('Logging handler established')
