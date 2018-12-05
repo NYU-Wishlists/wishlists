@@ -88,7 +88,13 @@ def healthcheck():
     """ Let them know our heart is still beating """
     return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
 
-
+######################################################################
+# GET INDEX
+######################################################################
+@app.route('/index')
+def index():
+    return app.send_static_file('index.html')
+	
 ######################################################################
 #  PATH: /wishlists
 ######################################################################
@@ -108,7 +114,8 @@ class WishlistCollection(Resource):
         wishlists = []
         wishlist_user = request.args.get('wishlist_user')
         wishlist_name = request.args.get('wishlist_name')
-
+        app.logger.info('Request to list wishlists of user %s with name: %s', wishlist_user, wishlist_name)
+		
         if wishlist_user:
             a = Wishlist.find_by_user(wishlist_user)
             ay = [w.serialize() for w in a]
