@@ -213,7 +213,7 @@ class Wishlist(object):
 			document.delete()
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=4, tries=10)
+	@retry(HTTPError, delay=5, backoff=5, tries=10)
 	def all(cls):
 		""" Returns all of the Wishlists in the database """
 		results = []
@@ -276,7 +276,7 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
-	@retry(HTTPError, delay=1, backoff=4, tries=10)
+	@retry(HTTPError, delay=5, backoff=5, tries=10)
 	def init_db(dbname='wishlsits'):
 		"""
 		Initialized Coundant database connection
