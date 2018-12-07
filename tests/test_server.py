@@ -46,6 +46,7 @@ class TestWishlistServer(unittest.TestCase):
     if 'VCAP_SERVICES' in os.environ:
         sleep(2.0)
 
+
 # FlaskRESTPlus takes over the index so we can't test it
     # def test_index(self):
     #	resp = self.app.get('/')
