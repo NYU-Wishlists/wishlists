@@ -43,7 +43,7 @@ class TestWishlistServer(unittest.TestCase):
     def throttle_api(amount=0.25):  # 1/4 second should be enough
         """ Throttles the API calls by sleeping """
     if 'VCAP_SERVICES' in os.environ:
-        sleep(amount)
+        sleep(0.5)
 
 # FlaskRESTPlus takes over the index so we can't test it
     # def test_index(self):
