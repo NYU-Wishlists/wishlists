@@ -250,6 +250,7 @@ class Wishlist(object):
 			return None
 
 	@classmethod
+	@retry(HTTPError, delay=1, backoff=4, tries=10)
 	def find_by_user(cls, wishlist_user):
 		""" Returns all a user's wishlists
 
@@ -259,6 +260,7 @@ class Wishlist(object):
 		return cls.find_by(user=wishlist_user)
 
 	@classmethod
+	@retry(HTTPError, delay=1, backoff=4, tries=10)
 	def find_by_name(cls, wishlist_name):
 		""" Returns all wishlists with the given name
 
@@ -274,7 +276,6 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
-	@retry(HTTPError, delay=1, backoff=4, tries=10)
 	def init_db(dbname='wishlsits'):
 		"""
 		Initialized Coundant database connection
