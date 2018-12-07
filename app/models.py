@@ -276,6 +276,7 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
+	@retry(HTTPError, delay=1, backoff=4, tries=10)
 	def init_db(dbname='wishlsits'):
 		"""
 		Initialized Coundant database connection
