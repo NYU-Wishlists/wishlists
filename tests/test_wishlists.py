@@ -41,7 +41,7 @@ class TestWishlists(unittest.TestCase):
 	def throttle_api():
 		""" Throttles the API calls by sleeping """
 	if 'VCAP_SERVICES' in os.environ:
-		sleep(0.5)
+		sleep(1.0)
 
 	def test_create_a_wishlist_entry(self):
 		""" Create a wishlist entry and assert that it exists """
