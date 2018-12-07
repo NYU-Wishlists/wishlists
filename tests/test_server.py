@@ -25,25 +25,27 @@ class TestWishlistServer(unittest.TestCase):
     def setUp(self):
         """ Runs before each test """
         self.app = service.app.test_client()
-        Wishlist.init_db()
         TestWishlistServer.throttle_api()
+        Wishlist.init_db()
         Wishlist("Wishlist demo 1", "demo user1", [service.Wishlist_entry(
             0, "test11"), service.Wishlist_entry(1, "test12")]).save()
-        TestWishlistServer.throttle_api()
+        # TestWishlistServer.throttle_api()
         Wishlist("Wishlist demo 2", "demo user2", [service.Wishlist_entry(
             0, "test21"), service.Wishlist_entry(1, "test22")]).save()
-        TestWishlistServer.throttle_api()
+        # TestWishlistServer.throttle_api()
 
     def tearDown(self):
         """ Runs after each test """
         TestWishlistServer.throttle_api()
         Wishlist.remove_all()
 
+
     @staticmethod
-    def throttle_api(amount=0.25):  # 1/4 second should be enough
+    def throttle_api():
         """ Throttles the API calls by sleeping """
     if 'VCAP_SERVICES' in os.environ:
-        sleep(2)
+        sleep(2.0)
+
 
 # FlaskRESTPlus takes over the index so we can't test it
     # def test_index(self):
