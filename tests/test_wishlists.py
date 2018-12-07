@@ -5,6 +5,7 @@ import mock
 from mock import patch
 from requests import HTTPError, ConnectionError
 from app.models import Wishlist, Wishlist_entry, DataValidationError
+from time import sleep  # use for rate limiting Cloudant Lite :(
 
 VCAP_SERVICES = {
 	'cloudantNoSQLDB': [
