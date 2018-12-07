@@ -23,6 +23,8 @@ from werkzeug.exceptions import NotFound
 # DatabaseConnectionError
 from app.models import Wishlist, Wishlist_entry, DataValidationError
 from . import app
+from requests import HTTPError, ConnectionError
+from retry import retry
 
 ######################################################################
 # Configure Swagger before initilaizing it
@@ -108,6 +110,7 @@ class WishlistCollection(Resource):
     @ns.param('wishlist_user', 'List Wishlists of a user')
     @ns.param('wishlist_name', 'Show wishlist with this name')
     @ns.marshal_with(wishlist_model)
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def get(self):
         """ Retrieves all the wishlists """
         app.logger.info('Request to list wishlists')
@@ -142,6 +145,7 @@ class WishlistCollection(Resource):
     @ns.response(400, 'The posted data was not valid')
     @ns.response(201, 'Wishlist created successfully')
     @ns.marshal_with(wishlist_model, code=201)
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def post(self):
         """
         Creates a Wishlist
@@ -181,6 +185,7 @@ class WishlistResource(Resource):
     @ns.doc('get_wishlist')
     @ns.response(404, 'Wishlist not found')
     @ns.marshal_with(wishlist_model)
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def get(self, wishlist_id):
         """
         Retrieve a single wishlist
@@ -200,6 +205,7 @@ class WishlistResource(Resource):
 
     @ns.doc('delete_wishlist')
     @ns.response(204, 'Wishlist deleted')
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def delete(self, wishlist_id):
         """
         Delete a Wishlist
@@ -221,6 +227,7 @@ class WishlistResource(Resource):
     @ns.response(400, 'The posted data was not valid')
     @ns.response(200, 'Wishlist updated successfully')
     @ns.response(404, 'Whislist not found')
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def put(self, wishlist_id):
         """
         update a Wishlist
@@ -253,6 +260,7 @@ class DeleteAllResource(Resource):
     """ DeleteAll actions on Wishlists"""
     @ns.doc('delete_all_wishlists_of_a_user')
     @ns.response(204, 'All wishlists of the user deleted')
+    @retry(HTTPError, delay=1, backoff=5, tries=10)
     def delete(self, user_name):
         """ Removes all wishlists of a user"""
         app.logger.info('Request to delete all wishlists of a user')
@@ -266,6 +274,7 @@ class DeleteAllResource(Resource):
 # DELETE ALL WISHLIST DATA (for testing only)
 ######################################################################
 @app.route('/wishlists/reset', methods=['DELETE'])
+@retry(HTTPError, delay=1, backoff=5, tries=10)
 def wishlists_reset():
     """ Removes all wishlists from the database """
     Wishlist.remove_all()
