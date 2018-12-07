@@ -214,6 +214,7 @@ class Wishlist(object):
 
 	@classmethod
 	@retry(HTTPError, delay=1, backoff=2, tries=5)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def all(cls):
 		""" Returns all of the Wishlists in the database """
 		results = []
@@ -274,6 +275,7 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def init_db(dbname='wishlsits'):
 		"""
 		Initialized Coundant database connection
