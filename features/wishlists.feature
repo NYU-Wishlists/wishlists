@@ -27,7 +27,15 @@ Scenario: List all wishlists
     And I press the "Search" button
     Then I should see "Mike" in the results
     
-
+Scenario: Read a Wishlist
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "Mikes" in the "Name" field
+    When I change "Name" to " "
+	And I change "user_name" to " "
+	When I press the "Retrieve" button
+    Then I should see "Mikes" in the "Name" field
+	
 Scenario: Update a Wishlist
     When I visit the "Home Page"
     And I press the "Search" button
