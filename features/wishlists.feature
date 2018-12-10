@@ -37,3 +37,12 @@ Scenario: Update a Wishlist
     Then I should see the message "Success"
 	When I press the "Retrieve" button
     Then I should see "My Wishlist" in the "Name" field
+
+Scenario: Delete a Wishlist
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "Mikes" in the "Name" field
+    When I press the "Delete" button
+    Then I should see the message "Deleted!"
+	When I press the "Search" button
+    Then I should not see "Mikes" in the results
