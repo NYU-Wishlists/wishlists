@@ -13,24 +13,27 @@ from selenium.webdriver.support import expected_conditions
 
 WAIT_SECONDS = 20
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000/')
+INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
 
+
+
+        
 @given('the following wishlists')
 def step_impl(context):
     """ Delete all Wishlists and load new ones """
     headers = {'Content-Type': 'application/json'}
-    #context.resp = requests.delete(context.base_url + '/wishlists/reset', headers=headers)
-    #expect(context.resp.status_code).to_equal(204)
+    context.resp = requests.delete(context.base_url + '/wishlists/reset', headers=headers)
+    expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/wishlists'
     for row in context.table:
+        wish_entries = row['entries'].split(',')
+        entries = []
+        for e in xrange(0,len(wish_entries)):
+		    entries.append({'id':e, 'name':wish_entries[e]})
         data = {
-            "id": row['id'], # Wishlist id
             "name": row['name'], # The name of the Wishlist
             "user": row['user'], # The name of the Wishlist
-            "entries": [{
-            'id': row['id'], # item id
-            'name': row['name'] # item name
-            }]
-            }
+            "entries": entries}  
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
         expect(context.resp.status_code).to_equal(201)
@@ -38,7 +41,7 @@ def step_impl(context):
 @when('I visit the "home page"')
 def step_impl(context):
     """ Make a call to the base URL """
-    context.driver.get(context.base_url)
+    context.driver.get(context.base_url + '/index')
     #context.driver.save_screenshot('home_page.png')
 
 @then('I should see "{message}" in the title')
@@ -53,7 +56,7 @@ def step_impl(context, message):
 
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
-    element_id = 'item_' + element_name.lower()
+    element_id = 'wishlist_' + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
     element.clear()
     element.send_keys(text_string)
@@ -72,16 +75,19 @@ def step_impl(context, button):
     context.driver.find_element_by_id(button_id).click()
 
 @then('I should see "{name}" in the results')
-def step_impl(context, message):
+def step_impl(context, name):
     #element = context.driver.find_element_by_id('flash_message')
     #expect(element.text).to_contain(message)
-    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
-        expected_conditions.text_to_be_present_in_element(
-            (By.ID, 'flash_message'),
-            message
-        )
-    )
-    expect(found).to_be(True)
+    #found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+    #    expected_conditions.text_to_be_present_in_element(
+    #        (By.ID, 'flash_message'),
+    #        message
+    #    )
+    #)
+    #expect(found).to_be(True)
+    element = context.driver.find_element_by_id('search_results')
+    error_msg = "I  see '%s' in '%s'" % (name, element.text)
+    ensure(name in element.text, True, error_msg)
 
 @then('I should not see "{name}" in the results')
 def step_impl(context, name):
@@ -104,26 +110,26 @@ def step_impl(context, message):
 ##################################################################
 # This code works because of the following naming convention:
 # The id field for text input in the html is the element name
-# prefixed by 'pet_' so the Name field has an id='pet_name'
-# We can then lowercase the name and prefix with pet_ to get the id
+# prefixed by 'wushlist_' so the Name field has an id='wishlist_name'
+# We can then lowercase the name and prefix with wishlist_ to get the id
 ##################################################################
 
 @then('I should see "{text_string}" in the "{element_name}" field')
 def step_impl(context, text_string, element_name):
-    element_id = 'item_' + element_name.lower()
-    element = context.driver.find_element_by_id(element_id)
-    expect(element.get_attribute('value')).to_equal(text_string)
-    # found = WebDriverWait(context.driver, WAIT_SECONDS).until(
-    #     expected_conditions.text_to_be_present_in_element_value(
-    #         (By.ID, element_id),
-    #         text_string
-    #     )
-    # )
-    # expect(found).to_be(True)
+    element_id = 'wishlist_' + element_name.lower()
+    #element = context.driver.find_element_by_id(element_id)
+    #expect(element.get_attribute('value')).to_equal(text_string)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element_value(
+            (By.ID, element_id),
+            text_string
+        )
+    )
+    expect(found).to_be(True)
 
 @when('I change "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
-    element_id = 'item_' + element_name.lower()
+    element_id = 'wishlist_' + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
     # element = WebDriverWait(context.driver, WAIT_SECONDS).until(
     #     expected_conditions.presence_of_element_located((By.ID, element_id))

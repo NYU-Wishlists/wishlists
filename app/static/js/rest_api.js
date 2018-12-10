@@ -6,6 +6,10 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
+		if (res.id!=null)
+		{
+			$("#wishlist_id").val(res.id);
+		}
         $("#wishlist_user_name").val(res.user);
         $("#wishlist_name").val(res.name);
         $("#wishlist_entries").val(JSON.stringify(res.entries));
@@ -231,7 +235,7 @@ $(function () {
 
         ajax.done(function(res){
             //alert(res.toSource())
-            //update_form_data(res)
+            update_form_data(res[0])
             flash_message("Success")
             update_table(res)
         });
