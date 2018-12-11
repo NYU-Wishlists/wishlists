@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions
 
 WAIT_SECONDS = 20
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000/')
-INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
+# INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
 
 
 
@@ -25,6 +25,7 @@ def step_impl(context):
     context.resp = requests.delete(context.base_url + '/wishlists/reset', headers=headers)
     expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/wishlists'
+
     for row in context.table:
         wish_entries = row['entries'].split(',')
         entries = []
@@ -41,7 +42,7 @@ def step_impl(context):
 @when('I visit the "home page"')
 def step_impl(context):
     """ Make a call to the base URL """
-    context.driver.get(context.base_url + '/index')
+    context.driver.get(context.base_url)
     #context.driver.save_screenshot('home_page.png')
 
 @then('I should see "{message}" in the title')

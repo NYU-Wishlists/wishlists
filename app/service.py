@@ -27,13 +27,20 @@ from requests import HTTPError, ConnectionError
 from retry import retry
 
 ######################################################################
+# GET INDEX
+######################################################################
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+######################################################################
 # Configure Swagger before initilaizing it
 ######################################################################
 api = Api(app,
           version='1.0.0',
           title='Wishlist REST API Service',
           description='This is a Wishlist store server.',
-          doc='/'
+          doc='/doc'
           # prefix='/api'
           )
 
@@ -89,13 +96,6 @@ def database_connection_error(error):
 def healthcheck():
     """ Let them know our heart is still beating """
     return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
-
-######################################################################
-# GET INDEX
-######################################################################
-@app.route('/index')
-def index():
-    return app.send_static_file('index.html')
 	
 ######################################################################
 #  PATH: /wishlists
