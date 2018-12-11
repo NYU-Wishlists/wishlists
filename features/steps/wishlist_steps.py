@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-WAIT_SECONDS = 20
+WAIT_SECONDS = 10
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000/')
 # INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
 
@@ -123,7 +123,7 @@ def step_impl(context, message):
 # prefixed by 'wushlist_' so the Name field has an id='wishlist_name'
 # We can then lowercase the name and prefix with wishlist_ to get the id
 ##################################################################
-WAIT_TOO_MANY_SECONDS = 480
+# WAIT_TOO_MANY_SECONDS = 480
 
 @then('I should see "{text_string}" in the "{element_name}" field')
 def step_impl(context, text_string, element_name):
@@ -131,7 +131,7 @@ def step_impl(context, text_string, element_name):
     # element_id = element_name.lower()
     # element = context.driver.find_element_by_id(element_id)
     # expect(element.get_attribute('value')).to_equal(text_string)
-    found = WebDriverWait(context.driver, WAIT_TOO_MANY_SECONDS).until(
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
         expected_conditions.text_to_be_present_in_element_value(
             (By.ID, element_id),
             text_string
