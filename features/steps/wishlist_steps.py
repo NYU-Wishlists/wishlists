@@ -78,8 +78,16 @@ def step_impl(context, button):
 
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
-    #element = context.driver.find_element_by_id('flash_message')
-    #expect(element.text).to_contain(message)
+    element = context.driver.find_element_by_id('search_results')
+    expect(element.text).to_contain(name)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    expect(found).to_be(True)
+
     #found = WebDriverWait(context.driver, WAIT_SECONDS).until(
     #    expected_conditions.text_to_be_present_in_element(
     #        (By.ID, 'flash_message'),
@@ -87,7 +95,7 @@ def step_impl(context, name):
     #    )
     #)
     #expect(found).to_be(True)
-    element = context.driver.find_element_by_id('search_results')
+    # element = context.driver.find_element_by_id('search_results')
     error_msg = "I  see '%s' in '%s'" % (name, element.text)
     ensure(name in element.text, True, error_msg)
 
@@ -133,9 +141,9 @@ def step_impl(context, text_string, element_name):
 def step_impl(context, element_name, text_string):
     element_id = 'wishlist_' + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
-    # element = WebDriverWait(context.driver, WAIT_SECONDS).until(
-    #     expected_conditions.presence_of_element_located((By.ID, element_id))
-    # )
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
     element.clear()
     element.send_keys(text_string)
 
