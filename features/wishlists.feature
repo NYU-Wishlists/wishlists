@@ -26,8 +26,8 @@ Scenario: Read a Wishlist
     When I visit the "Home Page"
     And I press the "Search" button
     Then I should see "Mikes" in the "Name" field
-    When I change "Name" to " "
-	And I change "user_name" to " "
+    When I change "Name" to "Mikes"
+	And I change "user_name" to "Mike"
 	When I press the "Retrieve" button
     Then I should see "Mikes" in the "Name" field
 	
