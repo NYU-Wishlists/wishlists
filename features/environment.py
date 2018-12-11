@@ -10,7 +10,8 @@ BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
 
 def before_all(context):
     """ Executed once before all tests """
-    context.driver = webdriver.PhantomJS()
+    context.driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
+    # context.driver = webdriver.PhantomJS()
     # context.driver.manage().timeouts().pageLoadTimeout(WAIT_SECONDS, TimeUnit.SECONDS);
     # context.driver.manage().timeouts().setScriptTimeout(WAIT_SECONDS, TimeUnit.SECONDS);
     context.driver.implicitly_wait(WAIT_SECONDS) # seconds
