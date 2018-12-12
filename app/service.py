@@ -5,12 +5,11 @@ Paths:
 -----
 GET /healthcheck -- Check heart beat
 GET  /wishlists/ - Retrieves a list of wishlists from the database
-GET  /wishlists/{id}/items - Retrieves a Wishlist with a specific id
-GET /wishlists?wishlist_user="username" - Retrieves the list of wishlists for a user
+GET  /wishlists/{id} - Retrieves a Wishlist with a specific id
+GET /wishlists?wishlist_user=username - Retrieves the list of wishlists for a user
 POST /wishlists - Creates a Wishlist in the datbase from the posted database
 PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
 DELETE /wishlists/{id} - Removes a Wishlist from the database that matches the id
-DELETE /wishlists/{wishlist_name} - Removes all wishlists that match a name
 DELETE /wishlists/{user_name}/delete_all - Removes all wishlists of a user
 """
 import os
@@ -96,7 +95,7 @@ def database_connection_error(error):
 def healthcheck():
     """ Let them know our heart is still beating """
     return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
-	
+
 ######################################################################
 #  PATH: /wishlists
 ######################################################################
@@ -118,7 +117,7 @@ class WishlistCollection(Resource):
         wishlist_user = request.args.get('wishlist_user')
         wishlist_name = request.args.get('wishlist_name')
         app.logger.info('Request to list wishlists of user %s with name: %s', wishlist_user, wishlist_name)
-		
+
         if wishlist_user:
             a = Wishlist.find_by_user(wishlist_user)
             ay = [w.serialize() for w in a]
