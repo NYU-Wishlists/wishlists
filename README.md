@@ -81,22 +81,48 @@ This repo also has a unit test that you can run with
     nosetests
 ```
 
-You should see all of the tests passing with a code coverage report at the end. this is controlled by the `setup.cfg` file in the repo.
+You should see all of the tests passing with a code coverage report at the end. This is controlled by the `setup.cfg` file in the repo.
 
 ## Services
 
-- **Create** a wishlist
+- **HealthCheck** 
+Check that the api is up and running.
 
+  ```
+  GET /healthcheck
+  ```
+  
+- **Create** a wishlist
   ```
   POST /wishlists
   ```
+  
+  Body example/format 
+  ```
+  {
+  "user": "Mikey", 
+  "entries": 
+    [{"id": 0, "name": "Mackbook"}, 
+     {"id": 1, "name": " Iphone"}], 
+  "name": "Mikes"
+  }
+  ```
+
+- **Retrieve all wishlists**
+  ```
+  GET /wishlists
+  
+  GET /
+  ```
+  
+With a specific wishlist ID, you can perform the following action:
 
 - **Read** a wishlist with id, list all items in it
 
   ```
-  GET /wishlists/<int:wishtlist_id>/items
+  GET /wishlists/<int:wishtlist_id>
   ```
-
+    
 - **Update** a wishlist with id
 
   ```
@@ -109,36 +135,16 @@ You should see all of the tests passing with a code coverage report at the end. 
   DELETE /wishlists/<int:id>
   ```
 
-- **Delete** all wishlists that match a name
-
-  ```
-  DELETE /wishlists/<wishlist_name>
-  ```
-
-- **List** all wishlists
-
-  ```
-  GET /wishlists
-  GET /
-  ```
-
 - **Query** with username, list all wishlists of a user
 
   ```
-  GET /wishlists?wishlist_user="username"
+  GET /wishlists?wishlist_user=username
   ```
 
 - **Action** delete all wishlists of a user
 
   ```
   DELETE /wishlists/<string:user_name>/delete_all
-  ```
-
-- **Try out** the demo
-
-  ```
-  POST /wishlists/demo
-  ...
   ```
 
 ## Shutdown
