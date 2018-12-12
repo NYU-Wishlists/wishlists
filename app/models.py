@@ -30,6 +30,9 @@ class DataValidationError(Exception):
 	pass
 
 
+class DatabaseConnectionError(ConnectionError):
+    pass
+
 
 class Wishlist_entry(object):
 	"""
