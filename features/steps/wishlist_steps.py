@@ -11,9 +11,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-WAIT_SECONDS = 20
+WAIT_SECONDS = 30
 BASE_URL = getenv('BASE_URL', 'http://localhost:5000/')
-INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
+# INDEX_URL = getenv('BASE_URL', 'http://localhost:5000/index')
 
 
 
@@ -25,6 +25,7 @@ def step_impl(context):
     context.resp = requests.delete(context.base_url + '/wishlists/reset', headers=headers)
     expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/wishlists'
+
     for row in context.table:
         wish_entries = row['entries'].split(',')
         entries = []
@@ -41,7 +42,8 @@ def step_impl(context):
 @when('I visit the "home page"')
 def step_impl(context):
     """ Make a call to the base URL """
-    context.driver.get(context.base_url + '/index')
+    context.driver.get(context.base_url)
+    print(BASE_URL)
     #context.driver.save_screenshot('home_page.png')
 
 @then('I should see "{message}" in the title')
@@ -76,8 +78,16 @@ def step_impl(context, button):
 
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
-    #element = context.driver.find_element_by_id('flash_message')
-    #expect(element.text).to_contain(message)
+    # element = context.driver.find_element_by_id('search_results')
+    # expect(element.text).to_contain(name)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    expect(found).to_be(True)
+
     #found = WebDriverWait(context.driver, WAIT_SECONDS).until(
     #    expected_conditions.text_to_be_present_in_element(
     #        (By.ID, 'flash_message'),
@@ -85,9 +95,9 @@ def step_impl(context, name):
     #    )
     #)
     #expect(found).to_be(True)
-    element = context.driver.find_element_by_id('search_results')
-    error_msg = "I  see '%s' in '%s'" % (name, element.text)
-    ensure(name in element.text, True, error_msg)
+    # element = context.driver.find_element_by_id('search_results')
+    # error_msg = "I  see '%s' in '%s'" % (name, element.text)
+    # ensure(name in element.text, True, error_msg)
 
 @then('I should not see "{name}" in the results')
 def step_impl(context, name):
@@ -113,12 +123,14 @@ def step_impl(context, message):
 # prefixed by 'wushlist_' so the Name field has an id='wishlist_name'
 # We can then lowercase the name and prefix with wishlist_ to get the id
 ##################################################################
+# WAIT_TOO_MANY_SECONDS = 480
 
 @then('I should see "{text_string}" in the "{element_name}" field')
 def step_impl(context, text_string, element_name):
     element_id = 'wishlist_' + element_name.lower()
-    #element = context.driver.find_element_by_id(element_id)
-    #expect(element.get_attribute('value')).to_equal(text_string)
+    # element_id = element_name.lower()
+    # element = context.driver.find_element_by_id(element_id)
+    # expect(element.get_attribute('value')).to_equal(text_string)
     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
         expected_conditions.text_to_be_present_in_element_value(
             (By.ID, element_id),
@@ -130,10 +142,10 @@ def step_impl(context, text_string, element_name):
 @when('I change "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
     element_id = 'wishlist_' + element_name.lower()
-    element = context.driver.find_element_by_id(element_id)
-    # element = WebDriverWait(context.driver, WAIT_SECONDS).until(
-    #     expected_conditions.presence_of_element_located((By.ID, element_id))
-    # )
+    # element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
     element.clear()
     element.send_keys(text_string)
 

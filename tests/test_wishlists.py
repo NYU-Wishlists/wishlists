@@ -28,20 +28,25 @@ VCAP_SERVICES = {
 class TestWishlists(unittest.TestCase):
 
 	def setUp(self):
-		TestWishlists.throttle_api()
+		# TestWishlists.throttle_api()
 		Wishlist.init_db("test")
+		# TestWishlists.throttle_api()
 		Wishlist.remove_all()
+		sleep(0.25)
+
 
 
 	def tearDown(self):
 		""" Runs after each test """
-		TestWishlists.throttle_api()
+		# if 'VCAP_SERVICES' in os.environ:
+		# 	sleep(0.5)
+		sleep(0.25)
 
-	@staticmethod
-	def throttle_api():
-		""" Throttles the API calls by sleeping """
-	if 'VCAP_SERVICES' in os.environ:
-		sleep(1.0)
+	# @staticmethod
+	# def throttle_api():
+	# 	""" Throttles the API calls by sleeping """
+	# if 'VCAP_SERVICES' in os.environ:
+	# 	sleep(0.5)
 
 	def test_create_a_wishlist_entry(self):
 		""" Create a wishlist entry and assert that it exists """

@@ -72,7 +72,7 @@ class Wishlist(object):
 	def equals(self, other): # pragma: no cover
 		return self.__dict__ == other.__dict__
 
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def create(self):
 		"""
 		Creates a new Wishlist in the database
@@ -89,7 +89,7 @@ class Wishlist(object):
 		if document.exists():
 			self.id = document['_id']
 
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def update(self):
 		"""
 		Updates a Wishlist in the database
@@ -102,7 +102,7 @@ class Wishlist(object):
 			document.update(self.serialize())
 			document.save()
 
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def save(self):
 		"""
 		Saves a Wishlist to the data store
@@ -131,7 +131,7 @@ class Wishlist(object):
 		self.entries.append(wishlist_entry)
 
 	"""
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=2, backoff=3, tries=5)
 	def delete_wishlist(self):
 		try:
 			document = self.database[self.id]
@@ -152,6 +152,7 @@ class Wishlist(object):
 
 	"""
 
+	@retry(HTTPError, delay=2, backoff=3, tries=5)
 	def deserialize(self, data):
 		"""
 		Deserializes a Wishlist from a dictionary
@@ -175,6 +176,7 @@ class Wishlist(object):
 
 		return self
 
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def serialize(self):
 		""" Serializes a wishlist into a dictionary """
 		return {"id": self.id, "name": self.name, "user": self.user, "entries": [entry.serialize() for entry in self.entries]}
@@ -186,13 +188,13 @@ class Wishlist(object):
 ######################################################################
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def connect(cls):
 		""" Connect to the server """
 		cls.client.connect()
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=1, backoff=2, tries=5)
 	def disconnect(cls):
 		""" Disconnect from the server """
 		cls.client.disconnect()
@@ -206,14 +208,14 @@ class Wishlist(object):
 	#     return cls.index
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	@retry(HTTPError, delay=2, backoff=3, tries=5)
 	def remove_all(cls):
 		""" Removes all of the Wishlists from the database """
 		for document in cls.database:
 			document.delete()
 
 	@classmethod
-	@retry(HTTPError, delay=5, backoff=10, tries=10)
+	@retry(HTTPError, delay=2, backoff=3, tries=5)
 	def all(cls):
 		""" Returns all of the Wishlists in the database """
 		results = []
@@ -228,7 +230,7 @@ class Wishlist(object):
 #  F I N D E R   M E T H O D S
 ######################################################################
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	# @retry(HTTPError, delay=1, backoff=5, tries=10)
 	def find_by(cls, **kwargs):
 		""" Find records using selector """
 		query = Query(cls.database, selector=kwargs)
@@ -240,7 +242,7 @@ class Wishlist(object):
 		return results
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	# @retry(HTTPError, delay=1, backoff=5, tries=10)
 	def find(cls, wishlist_id):
 		""" Query that finds Pets by their id """
 		try:
@@ -250,7 +252,7 @@ class Wishlist(object):
 			return None
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	# @retry(HTTPError, delay=1, backoff=5, tries=10)
 	def find_by_user(cls, wishlist_user):
 		""" Returns all a user's wishlists
 
@@ -260,7 +262,7 @@ class Wishlist(object):
 		return cls.find_by(user=wishlist_user)
 
 	@classmethod
-	@retry(HTTPError, delay=1, backoff=5, tries=10)
+	# @retry(HTTPError, delay=1, backoff=5, tries=10)
 	def find_by_name(cls, wishlist_name):
 		""" Returns all wishlists with the given name
 
@@ -276,8 +278,8 @@ class Wishlist(object):
 ############################################################
 
 	@staticmethod
-	@retry(HTTPError, delay=1, backoff=30, tries=10)
-	def init_db(dbname='wishlsits'):
+	# @retry(HTTPError, delay=1, backoff=30, tries=10)
+	def init_db(dbname='wishlists'):
 		"""
 		Initialized Coundant database connection
 		"""

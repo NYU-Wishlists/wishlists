@@ -24,15 +24,17 @@ Scenario: List all wishlists
 
 Scenario: Read a Wishlist
     When I visit the "Home Page"
+    And I set the "user_name" to "Mike"
     And I press the "Search" button
     Then I should see "Mikes" in the "Name" field
-    When I change "Name" to " "
-	And I change "user_name" to " "
+    When I change "Name" to "Mikes"
+	And I change "user_name" to "Mike"
 	When I press the "Retrieve" button
     Then I should see "Mikes" in the "Name" field
 	
 Scenario: Update a Wishlist
     When I visit the "Home Page"
+    And I set the "user_name" to "Mike"
     And I press the "Search" button
     Then I should see "Mikes" in the "Name" field
     When I change "Name" to "My Wishlist"
@@ -43,11 +45,13 @@ Scenario: Update a Wishlist
 
 Scenario: Delete a Wishlist
     When I visit the "Home Page"
+    And I set the "user_name" to "Mike"
     And I press the "Search" button
     Then I should see "Mikes" in the "Name" field
     When I press the "Delete" button
     Then I should see the message "Deleted!"
-	When I press the "Search" button
+    When I set the "user_name" to "Mike"
+	And I press the "Search" button
     Then I should not see "Mikes" in the results
 	
 	
