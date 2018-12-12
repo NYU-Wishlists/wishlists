@@ -197,7 +197,7 @@ class TestWishlistServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_wishlist_by_user(self):
-        """ Delete a wishlist by user name  """
+        """ Delete all wishlists of a user  """
         user_wishlists = self.get_wishlist_count_by_user('demo user1')
         wishlist_count = self.get_wishlist_count()
         resp = self.app.delete(
@@ -207,7 +207,7 @@ class TestWishlistServer(unittest.TestCase):
         new_count = self.get_wishlist_count()
         self.assertEqual(new_count, wishlist_count - user_wishlists)
 
-# Test update wishlost Resource
+# Test update wishlist Resource
 # TODO: query an exsisting wishlist instead of creating a new one for each test
     def test_update_wishlist(self):
         """ Update a Wishlist """

@@ -5,12 +5,14 @@ Paths:
 -----
 GET /healthcheck -- Check heart beat
 GET  /wishlists/ - Retrieves a list of wishlists from the database
-GET  /wishlists/{id} - Retrieves a Wishlist with a specific id
-GET /wishlists?wishlist_user=username - Retrieves the list of wishlists for a user
+GET  /wishlists/{wishlist_id}/items - Retrieves a Wishlist with a specific id
+GET /wishlists?wishlist_user="username" - Retrieves the list of wishlists for a user
+GET /wishlists?wishlist_user="username"&wishlist_name="wishlistname" 
+                        - Retrieves the list of wishlists that match a name for a user
 POST /wishlists - Creates a Wishlist in the datbase from the posted database
 PUT  /wishlists/{id} - Updates a Wishlist in the database fom the posted database
-DELETE /wishlists/{id} - Removes a Wishlist from the database that matches the id
-DELETE /wishlists/{user_name}/delete_all - Removes all wishlists of a user
+DELETE /wishlists/{wishlist_id} - Removes a Wishlist from the database that matches the id
+DELETE /wishlists/{wishlist_user}/delete_all - Removes all wishlists of a user
 """
 import os
 import sys
@@ -19,8 +21,7 @@ from flask import jsonify, request, json, url_for, make_response, abort, Respons
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields
 from werkzeug.exceptions import NotFound
-# DatabaseConnectionError
-from app.models import Wishlist, Wishlist_entry, DataValidationError
+from app.models import Wishlist, Wishlist_entry, DataValidationError, DatabaseConnectionError
 from . import app
 from requests import HTTPError, ConnectionError
 from retry import retry
@@ -77,14 +78,18 @@ def request_validation_error(error):
     return {'status': 400, 'error': 'Bad Request', 'message': message}, 400
 
 
-"""
-@api.errorhandler(DatabaseConnectionError)
+
+@api.errorhandler(DatabaseConnectionError)  
 def database_connection_error(error):
-     ""Handles Database Errors from connection attempts""
+    """ Handles Database Errors from connection attempts """
     message = error.message or str(error)
     app.logger.critical(message)
-    return {'status':500, 'error': 'Server Error', 'message': message}, 500
-"""
+    return {
+        'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
+        'error': 'Service Unavailable',
+        'message': message
+    }, status.HTTP_503_SERVICE_UNAVAILABLE
+
 
 ######################################################################
 # GET HEALTH CHECK
@@ -253,17 +258,17 @@ class WishlistResource(Resource):
 ######################################################################
 #  PATH: /wishlists/{user_name}/delete_all
 ######################################################################
-@ns.route('/<string:user_name>/delete_all')
-@ns.param('user_name', 'The Wishlist owner')
+@ns.route('/<string:wishlist_user>/delete_all')
+@ns.param('wishlist_user', 'The Wishlist owner')
 class DeleteAllResource(Resource):
     """ DeleteAll actions on Wishlists"""
     @ns.doc('delete_all_wishlists_of_a_user')
     @ns.response(204, 'All wishlists of the user deleted')
     # @retry(HTTPError, delay=1, backoff=5, tries=10)
-    def delete(self, user_name):
+    def delete(self, wishlist_user):
         """ Removes all wishlists of a user"""
         app.logger.info('Request to delete all wishlists of a user')
-        wishlists = Wishlist.find_by_user(user_name)
+        wishlists = Wishlist.find_by_user(wishlist_user)
         for wishlist in wishlists:
             wishlist.delete_wishlist()
         return '', status.HTTP_204_NO_CONTENT
