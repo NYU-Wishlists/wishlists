@@ -31,6 +31,16 @@ Once the VM is up you can use it with:
     python run.py
 ```
 
+Alternatively you can also start by using ` honcho `
+
+```sh
+    vagrant ssh
+    cd /vagrant
+    honcho start
+```
+__Honcho__ makes use of the ` Procfile ` to start the service using __Gunicorn__ similar to how one would start the server in production.
+
+
 You should now be able to see the service running in your browser by going to
 [http://localhost:5000](http://localhost:5000). You will see a message about the
 service which looks something like this:
@@ -47,9 +57,27 @@ When you are done, you can use `Ctrl+C` within the VM to stop the server.
 
 ## Testing
 
-Run the tests suite with:
+Run the test using ` behave `
+
+``` sh
+    cd /vagrant
+    python run.py &
+    behave
+```
+
+Note that the `&` runs the server in the background. To stop the server, you must bring it to the foreground and then press `Ctrl+C`
+
+Stop the server with
 
 ```sh
+    fg
+    <ctrl+c>
+```
+
+This repo also has a unit test that you can run with
+
+```sh
+    cd /vagrant
     nosetests
 ```
 
