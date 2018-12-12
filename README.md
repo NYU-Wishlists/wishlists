@@ -135,6 +135,8 @@ With a specific wishlist ID, you can perform the following action:
   DELETE /wishlists/<int:id>
   ```
 
+Other actions that can be performed:
+  
 - **Query** with username, list all wishlists of a user
 
   ```
