@@ -50,7 +50,8 @@ Scenario: Delete a Wishlist
     Then I should see "Mikes" in the "Name" field
     When I press the "Delete" button
     Then I should see the message "Deleted!"
-	When I press the "Search" button
+    When I set the "user_name" to "Mike"
+	And I press the "Search" button
     Then I should not see "Mikes" in the results
 	
 	

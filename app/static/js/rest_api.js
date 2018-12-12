@@ -146,7 +146,9 @@ $(function () {
       });
 
       ajax.fail(function(res){
+          clear_form_data()
           flash_message("Server error!")
+          update_table(res)
       });
   });
 
@@ -172,10 +174,13 @@ $(function () {
         ajax.done(function(res){
             clear_form_data()
             flash_message("wishlist with ID [" + wishlist_id + "] has been Deleted!")
+            update_table(res)
         });
 
         ajax.fail(function(res){
+            clear_form_data()
             flash_message("Server error!")
+            update_table(res)
         });
     });
 
@@ -198,10 +203,13 @@ $(function () {
         ajax.done(function(res){
             clear_form_data()
             flash_message("wishlist of  user " + user + " has been Deleted!")
+            update_table(res)
         });
 
         ajax.fail(function(res){
+            clear_form_data()
             flash_message("Server error!")
+            update_table(res)
         });
     });
     // ****************************************
@@ -243,6 +251,7 @@ $(function () {
         ajax.fail(function(res){
             clear_form_data()
             flash_message(res.responseJSON.message)
+            update_table(res)
         });
 
       });
