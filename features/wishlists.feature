@@ -53,7 +53,18 @@ Scenario: Delete a Wishlist
     When I set the "user_name" to "Mike"
 	And I press the "Search" button
     Then I should not see "Mikes" in the results
-	
+
+
+Scenario: Delete All Wishlists owned by a user
+    When I visit the "Home Page"
+    And I set the "user_name" to "Mike"
+    And I press the "Search" button
+    Then I should see "Mikes" in the "Name" field
+    When I press the "Delete-User" button
+    Then I should see the message "Deleted!" 
+    When I set the "user_name" to "Mike"
+    And I press the "Search" button
+    Then I should not see "Mikes" in the results	
 	
 Scenario: Create a Wishlist
     When I visit the "Home Page"
